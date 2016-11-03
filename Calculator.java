@@ -1,3 +1,5 @@
+import java.util.DoubleSummaryStatistics;
+
 /**
  * Created by jonas on 29/10/2016.
  */
@@ -80,6 +82,67 @@ public class Calculator {
         }
         arr = new String[]{memory1Name, memory2Name};
         return arr;
+
+    }
+
+    public double simpleExpression(String expression) {
+        String input = expression;
+        int i = 0;
+        int len = expression.length();
+        int parentheses;
+        int lastExpressionIndex;
+
+return 0;
+
+    }
+
+
+    //WORKING
+
+    public double sExpression(String expression) {
+        double result = 0;
+        System.out.println(expression);
+        if (expression.charAt(0) == '+') {
+            System.out.println("yes");
+            String firstOperand = expression.substring(2, expression.indexOf(')'));
+            System.out.println(firstOperand);
+            String secondOperand = expression.substring(expression.lastIndexOf('(') + 1, expression.length() - 1);
+            System.out.println(secondOperand);
+
+            result = Double.parseDouble(firstOperand) + Double.parseDouble(secondOperand);
+        }
+        return result;
+
+    }
+
+
+
+    public double calculate(String expression) {
+
+        String input = expression;
+
+
+
+
+
+//        int i = 0;
+//        if(expression.charAt(i) == '(') {
+//            calculate(expression.substring(i+1));
+//        }
+//
+//        for (int i = 0; i<expression.length();i++) {
+//            if (expression.charAt(i+1) != '+') {
+//                String sub = expression.substring(i, expression.lastIndexOf(i, ')'));
+//                double d = Double.parseDouble(sub);
+//                double[] d = d.split("\\),\\(|\\)|\\(");
+//                String result = arr[0] + arr[1];
+//                expression = expression + expression.replace(sub, result);
+//            }
+
+        // "+(3)(/(9)(3))" = 6
+
+
+       return 0;
 
     }
 

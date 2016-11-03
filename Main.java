@@ -24,7 +24,45 @@ public class Main {
     }
 
     private static void handleExpression(Scanner in, Calculator c1) {
+        String input = in.next();
+        int count = 0, len = input.length();
+        String ret = null;
+        String s = "teste 1";
 
+        while(count < len) {
+
+
+        if (input.charAt(count) == '+') {
+            ret = s.substring(0, count);
+        } else if (input.indexOf(0) == '-') {
+            ret = ret + s.substring(count+1, len);
+        } else if (input.indexOf(0) == '+') {
+
+        } else if (input.indexOf(0) == '+') {
+
+        } else if (input.indexOf(0) == '+') {
+
+        }
+
+        }
+
+        //ou
+
+//        count=0;
+//        int start=0;
+//
+//                while(count < len) {
+//                    if (s.charAt(count) == 'b' && !done) {
+//                        start = count;
+//                    } else if(s.charAt(count) == 's') {
+//                        ret = s.substring(start, count+1);
+//                        done = true;
+//                    }
+//                }
+
+
+        count++;
+        System.out.println(ret);
     }
 
     /**
@@ -85,11 +123,12 @@ public class Main {
         return in.next().toUpperCase();
     }
 
+
+
     public static void main(String[] args) {
 
 
         Scanner in = new Scanner(System.in);
-        Counter count1 = new Counter();
         Calculator c1;
 
         System.out.println("Insira nome de cada uma das duas memorias(ex: primeira segunda): ");
@@ -111,6 +150,8 @@ public class Main {
             c1 = new Calculator();
         }
 
+
+
         System.out.println(Arrays.toString(memories));
 
 
@@ -124,6 +165,9 @@ public class Main {
                     break;
                 case ("LM"): //informa nome das memorias com valor 2 casas
                     lm(c1);
+                    break;
+                case("CE"):
+                    System.out.println(c1.sExpression(in.next()));
                     break;
                 default:
                     //                System.out.println(option);
