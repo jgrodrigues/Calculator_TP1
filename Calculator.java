@@ -24,6 +24,8 @@ public class Calculator {
     private static final String LOG = "LOG";
     private static final String EXP = "EXP";
     private static final String ROUND = "ROUND";
+    private static final String CEIL = "CEIL";
+    private static final String FLOOR = "FLOOR";
     public double lastResult = 0;
 
     //Constructor
@@ -103,74 +105,74 @@ public class Calculator {
 
     public double sExpression(String expression) {
         double result = 0;
-        System.out.println(expression);
+//        System.out.println(expression);
         String firstParcel = null;
         String secondParcel = null;
 
 
         if (expression.indexOf('(') == 1) { //SIMPLE EXPRESSIONS
 
-            System.out.println("teste1");
+//            System.out.println("teste1");
 
             char operand = expression.charAt(0);
 
             firstParcel = expression.substring(2, expression.indexOf(')'));
-            System.out.println(firstParcel);
+//            System.out.println(firstParcel);
             secondParcel = expression.substring(expression.lastIndexOf('(') + 1, expression.length() - 1);
-            System.out.println(secondParcel);
+//            System.out.println(secondParcel);
             switch (operand) {
                 case (ADD):
-                    System.out.println(ADD);
+//                    System.out.println(ADD);
                     result = Double.parseDouble(firstParcel) + Double.parseDouble(secondParcel);
                     break;
                 case (MINUS):
-                    System.out.println(MINUS);
+//                    System.out.println(MINUS);
                     result = Double.parseDouble(firstParcel) - Double.parseDouble(secondParcel);
                     break;
                 case (PRODUCT):
-                    System.out.println(PRODUCT);
+//                    System.out.println(PRODUCT);
                     result = Double.parseDouble(firstParcel) * Double.parseDouble(secondParcel);
                     break;
                 case (DIVISION):
-                    System.out.println(DIVISION);
+//                    System.out.println(DIVISION);
                     result = Double.parseDouble(firstParcel) / Double.parseDouble(secondParcel);
                     break;
                 case (MODULE):
-                    System.out.println(MODULE);
+//                    System.out.println(MODULE);
                     result = Double.parseDouble(firstParcel) % Double.parseDouble(secondParcel);
                     break;
             }
         }else { //COMPLEX EXPRESSIONS
 
-            System.out.println("teste2");
+//            System.out.println("teste2");
 
             String operand = expression.substring(0,3).toUpperCase();
-            System.out.println(operand);
+//            System.out.println(operand);
 
             firstParcel = expression.substring(4, expression.indexOf(')'));
-            System.out.println(firstParcel);
+//            System.out.println(firstParcel);
 
 
 
             switch (operand) {
                 case (SIN):
-                    System.out.println(SIN);
+//                    System.out.println(SIN);
                     result = sin(Double.parseDouble(firstParcel));
                     break;
                 case (COS):
-                    System.out.println(COS);
+//                    System.out.println(COS);
                     result = cos(Double.parseDouble(firstParcel));
                     break;
                 case (LOG):
-                    System.out.println(LOG);
+//                    System.out.println(LOG);
                     result = Math.log(Double.parseDouble(firstParcel));
                     break;
                 case (EXP):
-                    System.out.println(EXP);
+//                    System.out.println(EXP);
                     result = Math.exp(Double.parseDouble(firstParcel));
                     break;
                 case (ROUND):
-                    System.out.println(ROUND);
+//                    System.out.println(ROUND);
                     result = Math.round(Double.parseDouble(firstParcel));
                     break;
                 //POR ACABAR
@@ -206,8 +208,12 @@ public class Calculator {
         return 0;
     }
 
-    public double avm() {
-        return lastResult;
+    public void avm(String memoryName) {
+        if (memoryName.equals(memory1Name)){
+            memory1 = lastResult;
+        } else if(memoryName.equals(memory2Name)){
+            memory2 = lastResult;
+        }
     }
 
 

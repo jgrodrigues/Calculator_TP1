@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.Arrays;
 
 
 public class Main {
@@ -166,10 +165,10 @@ public class Main {
                     lm(c1);
                     break;
                 case("CE"):
-                    System.out.println(c1.sExpression(in.next()));
+                    System.out.println(c1.sExpression(in.next().toUpperCase()));
                     break;
                 case("AVM"):
-                    System.out.println(c1.avm());
+                    c1.avm(in.next().toUpperCase());
                     break;
                 default:
                     //                System.out.println(option);
