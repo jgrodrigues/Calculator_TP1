@@ -1,3 +1,5 @@
+import com.sun.org.apache.xpath.internal.operations.Mod;
+
 import java.util.DoubleSummaryStatistics;
 
 /**
@@ -12,6 +14,17 @@ public class Calculator {
     private String memory2Name;
     private boolean hasMemory = false;
     private int memoryNumber;
+    private static final char MINUS = '-';
+    private static final char ADD = '+';
+    private static final char PRODUCT = '*';
+    private static final char DIVISION = '/';
+    private static final char MODULE = '%';
+    private static final String SIN = "SIN";
+    private static final String COS = "COS";
+    private static final String LOG = "LOG";
+    private static final String EXP = "EXP";
+    private static final String ROUND = "ROUND";
+    public double lastResult = 0;
 
     //Constructor
     public Calculator(String memory1Name, String memory2Name) {
@@ -47,9 +60,9 @@ public class Calculator {
         return hasMemory;
     }
 
-    public int getMemoryNumber() {
-        return memoryNumber;
-    }
+//    public int getMemoryNumber() {
+//        return memoryNumber;
+//    }
 
 
     /**
@@ -85,32 +98,85 @@ public class Calculator {
 
     }
 
-    public double simpleExpression(String expression) {
-        String input = expression;
-        int i = 0;
-        int len = expression.length();
-        int parentheses;
-        int lastExpressionIndex;
 
-return 0;
-
-    }
-
-
-    //WORKING
+    //WORKING NOT FINISHED
 
     public double sExpression(String expression) {
         double result = 0;
         System.out.println(expression);
-        if (expression.charAt(0) == '+') {
-            System.out.println("yes");
-            String firstOperand = expression.substring(2, expression.indexOf(')'));
-            System.out.println(firstOperand);
-            String secondOperand = expression.substring(expression.lastIndexOf('(') + 1, expression.length() - 1);
-            System.out.println(secondOperand);
+        String firstParcel = null;
+        String secondParcel = null;
 
-            result = Double.parseDouble(firstOperand) + Double.parseDouble(secondOperand);
+
+        if (expression.indexOf('(') == 1) { //SIMPLE EXPRESSIONS
+
+            System.out.println("teste1");
+
+            char operand = expression.charAt(0);
+
+            firstParcel = expression.substring(2, expression.indexOf(')'));
+            System.out.println(firstParcel);
+            secondParcel = expression.substring(expression.lastIndexOf('(') + 1, expression.length() - 1);
+            System.out.println(secondParcel);
+            switch (operand) {
+                case (ADD):
+                    System.out.println(ADD);
+                    result = Double.parseDouble(firstParcel) + Double.parseDouble(secondParcel);
+                    break;
+                case (MINUS):
+                    System.out.println(MINUS);
+                    result = Double.parseDouble(firstParcel) - Double.parseDouble(secondParcel);
+                    break;
+                case (PRODUCT):
+                    System.out.println(PRODUCT);
+                    result = Double.parseDouble(firstParcel) * Double.parseDouble(secondParcel);
+                    break;
+                case (DIVISION):
+                    System.out.println(DIVISION);
+                    result = Double.parseDouble(firstParcel) / Double.parseDouble(secondParcel);
+                    break;
+                case (MODULE):
+                    System.out.println(MODULE);
+                    result = Double.parseDouble(firstParcel) % Double.parseDouble(secondParcel);
+                    break;
+            }
+        }else { //COMPLEX EXPRESSIONS
+
+            System.out.println("teste2");
+
+            String operand = expression.substring(0,3).toUpperCase();
+            System.out.println(operand);
+
+            firstParcel = expression.substring(4, expression.indexOf(')'));
+            System.out.println(firstParcel);
+
+
+
+            switch (operand) {
+                case (SIN):
+                    System.out.println(SIN);
+                    result = sin(Double.parseDouble(firstParcel));
+                    break;
+                case (COS):
+                    System.out.println(COS);
+                    result = cos(Double.parseDouble(firstParcel));
+                    break;
+                case (LOG):
+                    System.out.println(LOG);
+                    result = Math.log(Double.parseDouble(firstParcel));
+                    break;
+                case (EXP):
+                    System.out.println(EXP);
+                    result = Math.exp(Double.parseDouble(firstParcel));
+                    break;
+                case (ROUND):
+                    System.out.println(ROUND);
+                    result = Math.round(Double.parseDouble(firstParcel));
+                    break;
+                //POR ACABAR
+            }
         }
+        lastResult = result;
         return result;
 
     }
@@ -124,21 +190,6 @@ return 0;
 
 
 
-
-//        int i = 0;
-//        if(expression.charAt(i) == '(') {
-//            calculate(expression.substring(i+1));
-//        }
-//
-//        for (int i = 0; i<expression.length();i++) {
-//            if (expression.charAt(i+1) != '+') {
-//                String sub = expression.substring(i, expression.lastIndexOf(i, ')'));
-//                double d = Double.parseDouble(sub);
-//                double[] d = d.split("\\),\\(|\\)|\\(");
-//                String result = arr[0] + arr[1];
-//                expression = expression + expression.replace(sub, result);
-//            }
-
         // "+(3)(/(9)(3))" = 6
 
 
@@ -146,9 +197,70 @@ return 0;
 
     }
 
-//    public double simpleExpression () {
-//
-//    }
+
+    public double recursion(String expression) {
+        if (Utilities.isDoubleValue(expression)) {
+            return Double.parseDouble(expression);
+        }
+//        if (expression.charAt(0) ==)
+        return 0;
+    }
+
+    public double avm() {
+        return lastResult;
+    }
+
+
+    public double add (double value1, double value2) {
+        return value1 + value2;
+    }
+
+    public double minus (double value1, double value2) {
+        return value1 - value2;
+    }
+
+    public double product (double value1, double value2) {
+        return value1 * value2;
+    }
+
+    public double division (double value1, double value2) {
+        return value1 / value2;
+    }
+
+    public double module (double value1, double value2) {
+        return value1 % value2;
+    }
+
+    public double log (double value) {
+        return Math.log(value);
+    }
+
+    public double exp (double value) {
+        return Math.exp(value);
+    }
+
+    public double round(double value) {
+        return Math.round(value);
+    }
+
+    public double ceil (double value) {
+        return Math.ceil(value);
+    }
+
+    public double floor (double value) {
+        return Math.floor(value);
+    }
+
+    public double cos (double value) {
+        return Math.cos(value);
+    }
+
+    public double sin (double value) {
+        return Math.sin(value);
+    }
+
+
+
 
 //    public double complexExpression() {
 //

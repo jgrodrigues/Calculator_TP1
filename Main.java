@@ -4,7 +4,9 @@ import java.util.Arrays;
 
 public class Main {
 
-    public static final char[] OPERAND = {'+', '-', '*', '/', '%'};
+    public static final char PLUS = '+';
+    public static final char MINUS = '-';
+//    public static final char
 
     private static int checkLastExpression(String input) {
         int lastParentheses;
@@ -98,11 +100,11 @@ public class Main {
     }
 
 
-    private static void consultMemoryName(Calculator c1) {
-        if (c1.getHasMemory()) {
-
-        }
-    }
+//    private static void consultMemoryName(Calculator c1) {
+//        if (c1.getHasMemory()) {
+//
+//        }
+//    }
 
     /**
      * ASSIGN MEMORY NAMES - WORKING!!
@@ -116,11 +118,11 @@ public class Main {
 
 
     private static String readLine(Scanner in) {
-        return in.nextLine().toUpperCase();
+        return in.nextLine().toUpperCase().trim();
     }
 
     private static String readNext(Scanner in) {
-        return in.next().toUpperCase();
+        return in.next().toUpperCase().trim();
     }
 
 
@@ -132,27 +134,24 @@ public class Main {
         Calculator c1;
 
         System.out.println("Insira nome de cada uma das duas memorias(ex: primeira segunda): ");
-        String[] memories = {};
-        String start = readLine(in);
+        String memory1 = readNext(in);
+        String memory2 = readNext(in);
+        in.nextLine();
 
 
-
-        if (!start.isEmpty()) {
-            memories = start.split("\\s+");
-            if (memories.length == 2) {
-                c1 = new Calculator(memories[0], memories[1]);
-            } else if(memories.length == 1) {
-                c1 = new Calculator(memories[0]);
-            } else {
-                c1 = new Calculator();
-            }
-        } else{
+        if(!memory1.isEmpty() && !memory2.isEmpty()) {
+            c1 = new Calculator(memory1, memory2);
+        } else if (!memory1.isEmpty() && memory2.isEmpty()) {
+            c1 = new Calculator(memory1);
+        } else {
             c1 = new Calculator();
         }
 
 
 
-        System.out.println(Arrays.toString(memories));
+
+        System.out.println(memory1);
+        System.out.println(memory2);
 
 
         String option = in.next().toUpperCase();
@@ -169,6 +168,9 @@ public class Main {
                 case("CE"):
                     System.out.println(c1.sExpression(in.next()));
                     break;
+                case("AVM"):
+                    System.out.println(c1.avm());
+                    break;
                 default:
                     //                System.out.println(option);
                     System.out.println("Greg");
@@ -183,93 +185,6 @@ public class Main {
 
 
 
-
-//        handleExpression(in, c1);
-
-
-//        String memArr[] = input.split(" ");
-
-
-//        System.out.println(Arrays.toString(memArr));
-
-
-
-//        char[] arr = input.toCharArray();
-
-
-
-
-        //checkLastExpression(input);
-
-
-
-//
-//
-//        int openParentheses = 0;
-//        int closeParentheses = 0;
-//
-//        char[] operandArr = new char[5];
-//
-//        for (int i = 0; i < input.length(); i++) {
-//            System.out.println(arr);
-//            switch (arr[i]) {
-//                case ('('):
-//                    openParentheses++;
-//                    System.out.println("Open parentheses " + openParentheses);
-//                    break;
-//                case (')'):
-//                    closeParentheses++;
-//                    System.out.println("Closed parentheses " + openParentheses);
-//                    break;
-//                case ('+'):
-//                    operandArr[i] = '+';
-//                    break;
-//                case ('-'):
-//                    operandArr[i] = '-';
-//                    break;
-//                case ('*'):
-//                    operandArr[i] = '*';
-//                    break;
-//                case ('/'):
-//                    operandArr[i] = '/';
-//                    break;
-//                case ('%'):
-//                    operandArr[i] = '%';
-//                    break;
-////              default:
-////                  System.out.println("Operand invalid. Quitting...");
-////                  System.exit(1);
-//            }
-//        }
-//
-//        if (openParentheses == closeParentheses) {
-//            System.out.println("Total expressions " + openParentheses);
-//
-//            System.out.println(arr);
-//            System.out.println(Arrays.toString(operandArr));
-//
-//
-//        } else {
-//            System.out.println("Expression Invalid. Quitting...");
-//            System.exit(1);
-//        }
-//
-//
-//        for (int z = 0; z < arr.length; z++) {
-//            System.out.println(arr[z]);
-//        }
-//
-//        int firstParentheses = input.lastIndexOf('(');
-//        System.out.println("X" + firstParentheses);
-//
-//        int lastParentheses = 0;
-//
-//            lastParentheses = input.lastIndexOf(')', firstParentheses) + firstParentheses;
-//            System.out.println("L"+ lastParentheses);
-//
-//        String expression = input.substring(firstParentheses + 1, lastParentheses);
-//
-//        System.out.println(expression);
 
 
 
