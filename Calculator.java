@@ -8,11 +8,11 @@ public class Calculator {
     public static final String NON_EXISTENT_MEMORY = "Memoria nao existente.";
     public static final String NO_MEMORY_MESSAGE = "Calculadora sem memorias.";
 
-    private static final char MINUS = '-';
-    private static final char ADD = '+';
-    private static final char PRODUCT = '*';
-    private static final char DIVISION = '/';
-    private static final char MODULE = '%';
+    private static final String MINUS = "-";
+    private static final String ADD = "+";
+    private static final String PRODUCT = "*";
+    private static final String DIVISION = "/";
+    private static final String MODULE = "%";
     private static final String SIN = "SIN";
     private static final String COS = "COS";
     private static final String LOG = "LOG";
@@ -36,6 +36,7 @@ public class Calculator {
     public Calculator(String name) {
         lastResult = 0;
         mem1 = new Memory(name);
+        mem2 = null;
     }
 
     public Calculator(String name1, String name2) {
@@ -43,70 +44,105 @@ public class Calculator {
 
         if(name1.equals(name2)) {
             mem1 = new Memory(name1);
+            mem2 = null;
         } else {
             mem1 = new Memory(name1);
             mem2 = new Memory(name2);
         }
     }
 
+    public boolean isExpression(String expression){
+        int parentheses = 0;
+        int i = 0;
+        do{
+            if (expression.charAt(i) == '(') {
+                parentheses += 1;
+            } else if(expression.charAt(i) == ')') {
+                parentheses -= 1;
+            }
+
+            i++;
+        }while(i<expression.length());
+
+        return parentheses == 0;
+    }
+
+    double getExpNumber(String expression) {
+        String operator = "";
+        double number;
+        if (expression.indexOf('(') != -1) {
+            operator = expression.substring(0, expression.indexOf('(')).trim();
+        }
+
+        if (isBinaryOperator(operator) || isUnaryOperator(operator)) {
+            number = calculateExpression(expression);
+        } else if (Utilities.isDoubleValue(expression)) {
+            number = Double.parseDouble(expression);
+        } else {
+            number = getMemoryValue(expression);
+        }
+
+        return number;
+    }
 
     public double calculateExpression(String expression) {
-        System.out.println(expression);
 
-        double result = Double.NaN;
+        String operator = "";
         String firstParcel;
         String secondParcel;
+        String parcels = "";
+        int i=0;
+        int parentheses = 0;
 
-            if (expression.indexOf('(') == 0) { //isMEMORY
-                System.out.println("teste1");
-                firstParcel = expression.substring(1, expression.indexOf(')'));
-                result = literalExpression(firstParcel);
-
-            } else if (Utilities.isDoubleValue(expression)){ //isDOUBLE
-                System.out.println("teste2");
-                result = literalExpression(expression);
-
-                 } else {
+        if (expression.indexOf('(') != -1) {
+            operator = expression.substring(0, expression.indexOf('(')).trim();
+            parcels = expression.substring(expression.indexOf('('), expression.length()).trim();
+        }
 
 
+        do {
+            if(parcels.charAt(i) == '(') {
+                parentheses++;
+            } else if(parcels.charAt(i) == ')') {
+                parentheses--;
+            }
 
-                        if (expression.indexOf('(') == 1) { //isBINARY
+            i++;
+        } while (parentheses != 0);
 
-                            System.out.println("teste2");
+        firstParcel = parcels.substring(1, i - 1);
 
-                            char operand = expression.charAt(0);
-
-
-                            int secondParentheses = expression.indexOf('(', expression.indexOf(')'));
-                            int length = expression.length();
-
-
-                            firstParcel = expression.substring(2, expression.indexOf(')'));
-
-
-                            System.out.println(firstParcel);
-                            secondParcel = expression.substring(secondParentheses + 1, length - 1);
-                            System.out.println(secondParcel);
+        if (isBinaryOperator(operator)) {
+            secondParcel = parcels.substring(i, parcels.length() - 1).trim();
+            secondParcel = secondParcel.substring(1, secondParcel.length());
 
 
-                            result = binaryExpression(firstParcel, secondParcel, operand);
+            lastResult = binaryExpression(getExpNumber(firstParcel), getExpNumber(secondParcel), operator);
 
-                        } else if (expression.charAt(0) != '(' && !Utilities.isDoubleValue(expression)) { //isUNARY
+        } else if (isUnaryOperator(operator)) {
+                if (parcels.indexOf('(') != -1) {
+                    operator = parcels.substring(0, expression.indexOf('(')).trim();
+                }
 
+            lastResult = unaryExpression(getExpNumber(firstParcel), operator);
 
-                            String operand = expression.substring(0, 3).toUpperCase();
+        } else {
+                lastResult = literalExpression(expression);
+        }
 
-                            firstParcel = expression.substring(4, expression.indexOf(')'));
-
-                            result = unaryExpression(firstParcel, operand);
-
-                        }
-                    }
-        lastResult = result;
-        return result;
+        return lastResult;
 
     }
 
+
+    public boolean isBinaryOperator(String operator) {
+        return operator.equals(ADD) || operator.equals(MINUS) || operator.equals(DIVISION) || operator.equals(MODULE) || operator.equals(PRODUCT);
+    }
+
+    public boolean isUnaryOperator(String operator) {
+        return operator.equals(SIN) || operator.equals(COS) || operator.equals(EXP) || operator.equals(LOG) ||
+                operator.equals(ROUND) || operator.equals(CEIL) || operator.equals(FLOOR);
+    }
 
     /**
      * Solve Literal Expression
@@ -115,7 +151,7 @@ public class Calculator {
      * @return
      */
     public double literalExpression(String expression) {
-        double value = Double.NaN;
+        double value;
         if (expression.equalsIgnoreCase(mem1.getMemoryName())) {
             value =  mem1.getMemoryValue();
         } else if (expression.equalsIgnoreCase(mem2.getMemoryName())) {
@@ -133,55 +169,51 @@ public class Calculator {
      * @param operand
      * @return
      */
-    public double unaryExpression(String parcel, String operand) {
+    public double unaryExpression(double parcel, String operand) {
         double result = Double.NaN;
         switch (operand) {
             case (SIN):
-                result = sin(Double.parseDouble(parcel));
+                result = sin(parcel);
                 break;
             case (COS):
-                result = cos(Double.parseDouble(parcel));
+                result = cos(parcel);
                 break;
             case (LOG):
-                result = Math.log(Double.parseDouble(parcel));
+                result = Math.log(parcel);
                 break;
             case (EXP):
-                result = Math.exp(Double.parseDouble(parcel));
+                result = Math.exp(parcel);
                 break;
             case (ROUND):
-                result = Math.round(Double.parseDouble(parcel));
+                result = Math.round(parcel);
                 break;
             case (CEIL):
-                result = Math.ceil(Double.parseDouble(parcel));
+                result = Math.ceil(parcel);
                 break;
             case (FLOOR):
-                result = Math.floor(Double.parseDouble(parcel));
+                result = Math.floor(parcel); //Missing abs
         }
         return result;
     }
 
-    public double binaryExpression(String firstParcel, String secondParcel, char operand) {
+    public double binaryExpression(double first, double second, String operand) {
         double result = Double.NaN;
         switch (operand) {
             case (ADD):
-                result = Double.parseDouble(firstParcel) + Double.parseDouble(secondParcel);
+                result = first + second;
                 break;
             case (MINUS):
-                result = Double.parseDouble(firstParcel) - Double.parseDouble(secondParcel);
+                result = first - second;
                 break;
             case (PRODUCT):
-                result = Double.parseDouble(firstParcel) * Double.parseDouble(secondParcel);
+                result = first * second;
                 break;
             case (DIVISION):
-                result = Double.parseDouble(firstParcel) / Double.parseDouble(secondParcel);
-                break;
-            case (MODULE):
-                result = Double.parseDouble(firstParcel) % Double.parseDouble(secondParcel);
+                result = first / second;
                 break;
         }
         return result;
     }
-
 
     public double getMemoryValue (String memoryName) {
         double value = 0;
@@ -221,8 +253,8 @@ public class Calculator {
 //        boolean mem1NotEmpty = !mem1.getMemoryName().isEmpty();
 //        boolean mem2NotEmpty = !mem2.getMemoryName().isEmpty();
 
-        boolean mem1NotEmpty = !mem1.getMemoryName().equals(null);
-        boolean mem2NotEmpty = !mem2.getMemoryName().equals(null);
+        boolean mem1NotEmpty = !(mem1 == null);
+        boolean mem2NotEmpty = !(mem2 == null);
 
         if (mem1NotEmpty || mem2NotEmpty) {
             if (mem1NotEmpty) {
