@@ -24,6 +24,7 @@ public class Calculator {
     private static final String ROUND = "ROUND";
     private static final String CEIL = "CEIL";
     private static final String FLOOR = "FLOOR";
+    private static final String ABS = "ABS";
     private double lastResult;
 
     //Memories
@@ -148,7 +149,6 @@ public class Calculator {
                 if (parcels.indexOf('(') != -1) {
                     operator = parcels.substring(0, expression.indexOf('(')).trim();
                 }
-
             lastResult = unaryExpression(getExpNumber(firstParcel), operator);
 
         } else {
@@ -177,7 +177,7 @@ public class Calculator {
      */
     public boolean isUnaryOperator(String operator) {
         return operator.equals(SIN) || operator.equals(COS) || operator.equals(EXP) || operator.equals(LOG) ||
-                operator.equals(ROUND) || operator.equals(CEIL) || operator.equals(FLOOR);
+                operator.equals(ROUND) || operator.equals(CEIL) || operator.equals(FLOOR) || operator.equals(ABS);
     }
 
     /**
@@ -227,7 +227,11 @@ public class Calculator {
                 result = Math.ceil(parcel);
                 break;
             case (FLOOR):
-                result = Math.floor(parcel); //Missing abs
+                result = Math.floor(parcel);
+                break;
+            case (ABS):
+                result = Math.floor(parcel);
+                break;
         }
         return result;
     }
