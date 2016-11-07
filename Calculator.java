@@ -3,11 +3,15 @@
  */
 public class Calculator {
 
-    //Variaveis
+    /**
+     * Instance Variables
+     */
 
+    //Error messages
     public static final String NON_EXISTENT_MEMORY = "Memoria nao existente.";
     public static final String NO_MEMORY_MESSAGE = "Calculadora sem memorias.";
 
+    //Operators
     private static final String MINUS = "-";
     private static final String ADD = "+";
     private static final String PRODUCT = "*";
@@ -22,10 +26,13 @@ public class Calculator {
     private static final String FLOOR = "FLOOR";
     private double lastResult;
 
+    //Memories
     private Memory mem1;
     private Memory mem2;
 
-
+    /**
+     * Constructor
+     */
     public Calculator() {
         lastResult = 0;
 
@@ -51,6 +58,12 @@ public class Calculator {
         }
     }
 
+    /**
+     * Check if input is an expression
+     *
+     * @param expression
+     * @return
+     */
     public boolean isExpression(String expression){
         int parentheses = 0;
         int i = 0;
@@ -67,6 +80,12 @@ public class Calculator {
         return parentheses == 0;
     }
 
+    /**
+     * *******************
+     *
+     * @param expression
+     * @return
+     */
     double getExpNumber(String expression) {
         String operator = "";
         double number;
@@ -85,6 +104,12 @@ public class Calculator {
         return number;
     }
 
+    /**
+     * CE - Calculate Expression
+     *
+     * @param expression
+     * @return
+     */
     public double calculateExpression(String expression) {
 
         String operator = "";
@@ -134,18 +159,29 @@ public class Calculator {
 
     }
 
-
+    /**
+     * Check if is a binary operator
+     *
+     * @param operator
+     * @return
+     */
     public boolean isBinaryOperator(String operator) {
         return operator.equals(ADD) || operator.equals(MINUS) || operator.equals(DIVISION) || operator.equals(MODULE) || operator.equals(PRODUCT);
     }
 
+    /**
+     * Check if is a unary operator
+     *
+     * @param operator
+     * @return
+     */
     public boolean isUnaryOperator(String operator) {
         return operator.equals(SIN) || operator.equals(COS) || operator.equals(EXP) || operator.equals(LOG) ||
                 operator.equals(ROUND) || operator.equals(CEIL) || operator.equals(FLOOR);
     }
 
     /**
-     * Solve Literal Expression
+     * Calculate Literal Expression
      *
      * @param expression
      * @return
@@ -163,20 +199,20 @@ public class Calculator {
     }
 
     /**
-     * Solve Unary Expression
+     * Calculate Unary Expression
      *
      * @param parcel
-     * @param operand
+     * @param operator
      * @return
      */
-    public double unaryExpression(double parcel, String operand) {
+    public double unaryExpression(double parcel, String operator) {
         double result = Double.NaN;
-        switch (operand) {
+        switch (operator) {
             case (SIN):
-                result = sin(parcel);
+                result = Math.sin(parcel);
                 break;
             case (COS):
-                result = cos(parcel);
+                result = Math.cos(parcel);
                 break;
             case (LOG):
                 result = Math.log(parcel);
@@ -196,25 +232,39 @@ public class Calculator {
         return result;
     }
 
-    public double binaryExpression(double first, double second, String operand) {
+    /**
+     * Calculate binary expression
+     *
+     * @param firstParcel
+     * @param secondParcel
+     * @param operator
+     * @return
+     */
+    public double binaryExpression(double firstParcel, double secondParcel, String operator) {
         double result = Double.NaN;
-        switch (operand) {
+        switch (operator) {
             case (ADD):
-                result = first + second;
+                result = firstParcel + secondParcel;
                 break;
             case (MINUS):
-                result = first - second;
+                result = firstParcel - secondParcel;
                 break;
             case (PRODUCT):
-                result = first * second;
+                result = firstParcel * secondParcel;
                 break;
             case (DIVISION):
-                result = first / second;
+                result = firstParcel / secondParcel;
                 break;
         }
         return result;
     }
 
+    /**
+     * VM - Get memory value
+     *
+     * @param memoryName
+     * @return
+     */
     public double getMemoryValue (String memoryName) {
         double value = 0;
         if (memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
@@ -227,6 +277,11 @@ public class Calculator {
         return value;
     }
 
+    /**
+     * AVM - Assign last value to memory
+     *
+     * @param memoryName
+     */
     public void assignLastValue(String memoryName) {
         double lastResult = getLastResult();
         if (memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
@@ -239,6 +294,11 @@ public class Calculator {
     }
 
 
+    /**
+     * Get memory value
+     *
+     * @param memoryName
+     */
     public void getValue(String memoryName) {
         double memoryValue = getMemoryValue(memoryName);
         if (!(Double.isNaN(memoryValue))) {
@@ -248,10 +308,10 @@ public class Calculator {
         }
     }
 
-    //FIX EMPTY VALUE
+    /**
+     * LM - Gets memories names and values;
+     */
     public void getMemoriesInfo() {
-//        boolean mem1NotEmpty = !mem1.getMemoryName().isEmpty();
-//        boolean mem2NotEmpty = !mem2.getMemoryName().isEmpty();
 
         boolean mem1NotEmpty = !(mem1 == null);
         boolean mem2NotEmpty = !(mem2 == null);
@@ -274,53 +334,4 @@ public class Calculator {
     public double getLastResult() {
         return lastResult;
     }
-
-    public double add (double value1, double value2) {
-        return value1 + value2;
-    }
-
-    public double minus (double value1, double value2) {
-        return value1 - value2;
-    }
-
-    public double product (double value1, double value2) {
-        return value1 * value2;
-    }
-
-    public double division (double value1, double value2) {
-        return value1 / value2;
-    }
-
-    public double module (double value1, double value2) {
-        return value1 % value2;
-    }
-
-    public double log (double value) {
-        return Math.log(value);
-    }
-
-    public double exp (double value) {
-        return Math.exp(value);
-    }
-
-    public double round(double value) {
-        return Math.round(value);
-    }
-
-    public double ceil (double value) {
-        return Math.ceil(value);
-    }
-
-    public double floor (double value) {
-        return Math.floor(value);
-    }
-
-    public double cos (double value) {
-        return Math.cos(value);
-    }
-
-    public double sin (double value) {
-        return Math.sin(value);
-    }
-
 }

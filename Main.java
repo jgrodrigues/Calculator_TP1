@@ -13,14 +13,14 @@ public class Main {
     /**
      * SHOW HELP MENU
      */
-//    private static void showOptions() {
-//        System.out.printf("VM - Consultar o valor da memoria\n" +
-//                "LM - Indicar o nome das memorias\n" +
-//                "CE - Calcular o valor duma expressao\n" +
-//                "AVM - Atribuir ultimo valor calculado a memoria\n" +
-//                "A - Ajuda\n" +
-//                "S - Sair\n");
-//    }
+    private static void showOptions() {
+        System.out.printf("VM - Consultar o valor da memoria\n" +
+                "LM - Indicar o nome das memorias\n" +
+                "CE - Calcular o valor duma expressao\n" +
+                "AVM - Atribuir ultimo valor calculado a memoria\n" +
+                "A - Ajuda\n" +
+                "S - Sair\n");
+    }
 
 
 
