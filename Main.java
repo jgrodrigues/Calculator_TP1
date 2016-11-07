@@ -3,13 +3,8 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static final char PLUS = '+';
-    public static final char MINUS = '-';
     public static final String NON_EXISTENT_OPTION = "Opcao inexistente.";
-    public static final String NON_EXISTENT_MEMORY = "Memoria nao existente.";
     public static final String EXIT_MESSAGE = "Aplicacao terminada. Ate a proxima";
-    public static final String NO_MEMORY_MESSAGE = "Calculadora sem memorias.";
-
 
     private static int checkLastExpression(String input) {
         int lastParentheses;
@@ -74,116 +69,127 @@ public class Main {
      * SHOW HELP MENU
      */
     private static void showOptions() {
-        //MENU
+        System.out.printf("VM - Consultar o valor da memoria\n" +
+                "LM - Indicar o nome das memorias\n" +
+                "CE - Calcular o valor duma expressao\n" +
+                "AVM - Atribuir ultimo valor calculado a memoria\n" +
+                "A - Ajuda\n" +
+                "S - Sair\n");
     }
 
 
-    private static void lm(Memory m1) {
-        String memory1 = m1.getMemory1Name();
-        String memory2 = m1.getMemory2Name();
-
-        if (m1.hasMemories()) {
-            if (!memory1.isEmpty()) {
-                System.out.printf("%s: ", memory1);
-                System.out.printf("%.2f\n", m1.getMemoryValue(memory1));
-            }
-            if (!memory2.isEmpty()) {
-                System.out.printf("%s: ", memory2);
-                System.out.printf("%.2f\n", m1.getMemoryValue(memory2));
-            }
-        } else {
-            System.out.println(NO_MEMORY_MESSAGE);
-        }
-    }
-
+//    private static void lm(Memory m1) {
+//        String memory1 = m1.getMemory1Name();
+//        String memory2 = m1.getMemory2Name();
+//
+//        if (m1.hasMemories()) {
+//            if (!memory1.isEmpty()) {
+//                System.out.printf("%s: ", memory1);
+//                System.out.printf("%.2f\n", m1.getMemoryValue(memory1));
+//            }
+//            if (!memory2.isEmpty()) {
+//                System.out.printf("%s: ", memory2);
+//                System.out.printf("%.2f\n", m1.getMemoryValue(memory2));
+//            }
+//        } else {
+//            System.out.println(NO_MEMORY_MESSAGE);
+//        }
+//    }
 
 
     /**
-     * ASSIGN MEMORY NAMES - WORKING!!
+     * ASSIGN MEMORY NAMES
      *
-     * @param in
+     * @param memory1
+     * @param memory2
+     * @param m1
      */
-    private static void assignMemory(String memory1, String memory2, Memory m1) {
+//    private static void assignMemory(String memory1, String memory2, Memory m1) {
+//
+//        if(!memory1.isEmpty() && !memory2.isEmpty() && !memory1.equalsIgnoreCase(memory2)) {
+//            m1 = new Memory(memory1, memory2);
+//            if (memory1.equals(memory2)) {
+//                m1 = new Memory(memory1);
+//            }
+//        } else {
+//            m1 = new Memory();
+//        }
+//
+//    }
 
-        if(!memory1.isEmpty() && !memory2.isEmpty() && !memory1.equalsIgnoreCase(memory2)) {
-            m1 = new Memory(memory1, memory2);
-            if (memory1.equals(memory2)) {
-                m1 = new Memory(memory1);
-            }
-        } else {
-            m1 = new Memory();
-        }
+//    private static void vm(String memoryName, Calculator c1) {
+//        double memoryValue = c1(memoryName);
+//        if (!(Double.isNaN(memoryValue))) {
+//            System.out.println(memoryValue);
+//
+//        } else {
+//            System.out.println(NON_EXISTENT_MEMORY);
+//        }
+//    }
 
-    }
 
 
-    private static void avm(String memoryName, Calculator c1, Memory m1) {
-        double lastResult = c1.getLastResult();
-        if (memoryName.equalsIgnoreCase(m1.getMemory1Name())) {
-            m1.setMemoryValue(memoryName, lastResult);
-            System.out.println(memoryName + ": " + lastResult);
-        } else if(memoryName.equalsIgnoreCase(m1.getMemory2Name())) {
-            m1.setMemoryValue(memoryName, lastResult);
-            System.out.println(memoryName + ": " + lastResult);
-        }
-    }
 
     public static void main(String[] args) {
 
 
         Scanner in = new Scanner(System.in);
-        Calculator c1 = new Calculator();
-        Memory m1 = null;
-        System.out.println("Insira nome de cada uma das duas memorias(ex: primeira segunda): ");
+        Calculator c1;
 
-        String memory1 = in.next().trim();
-        String memory2 = in.next().trim();
-        in.nextLine();
+        String memories = in.nextLine().trim();
+        String memory1 = "";
+        String memory2 = "";
 
-//        assignMemory(memory1, memory2, m1);
-
-        if(!memory1.isEmpty() && !memory2.isEmpty() && !memory1.equalsIgnoreCase(memory2)) {
-            m1 = new Memory(memory1, memory2);
-            if (memory1.equals(memory2)) {
-                m1 = new Memory(memory1);
-            }
+        if (memories.isEmpty()) {
+            c1 = new Calculator();
+            System.out.println("1");
+        } else if (memories.indexOf(' ') == -1) {
+            c1 = new Calculator(memories);
+            System.out.println("2");
         } else {
-            m1 = new Memory();
+            memory1 = memories.substring(0, memories.indexOf(' '));
+            memory2 = memories.substring(memories.indexOf(' '), memories.length()).trim();
+            c1 = new Calculator(memory1, memory2);
+            System.out.println("3");
         }
 
 
-        //DEBUG
-        System.out.println(memory1);
-        System.out.println(memory2);
 
 
-        //Options
+
+//        showOptions();
         String option = in.next().toUpperCase();
 
         while(!option.equals("S")) {
 
+
+
             switch (option) {
                 case ("VM"): //consultar valor memoria
-                    System.out.println(m1.getMemoryValue(in.next()));
+                    c1.vm(in.next());
                     break;
                 case ("LM"): //informa nome das memorias com valor 2 casas
-                    lm(m1);
+                    c1.lm();
                     break;
                 case("CE"):
-                    System.out.println(c1.sExpression(in.next().toUpperCase()));
+                    System.out.println(c1.ce(in.nextLine().toUpperCase().trim()));
                     break;
                 case("AVM"):
-//                    c1.avm(in.next().toUpperCase());
-                    avm(in.next(), c1, m1);
+                    c1.avm(in.next());
+                    break;
+                case ("A"):
+                    showOptions();
                     break;
                 default:
-                    //                System.out.println(option);
-                    System.out.println("Greg");
+                    //DEBUG
+                    System.out.println(option);
+                    System.out.println(NON_EXISTENT_OPTION);
                     break;
             }
             in.nextLine();
             option = in.next().toUpperCase();
         }
+        System.out.println(EXIT_MESSAGE);
     }
 }
 
