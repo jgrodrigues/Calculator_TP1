@@ -62,16 +62,16 @@ public class Main {
 
             switch (option) {
                 case ("VM"): //Return value of memory
-                    c1.vm(in.next());
+                    c1.getValue(in.next());
                     break;
                 case ("LM"): //Return value and name of memories
-                    c1.lm();
+                    c1.getMemoriesInfo();
                     break;
                 case("CE"): //Calculate Expression
-                    System.out.println(c1.ce(in.next().toUpperCase().trim()));
+                    System.out.printf("%.2f\n", c1.calculateExpression(in.nextLine().toUpperCase().trim()));
                     break;
                 case("AVM"): //Set last result value to a memory
-                    c1.avm(in.next());
+                    c1.assignLastValue(in.next());
                     break;
                 case ("A"): //Help Menu
                     showOptions();
@@ -82,7 +82,7 @@ public class Main {
                     System.out.println(NON_EXISTENT_OPTION);
                     break;
             }
-            in.nextLine();
+//            in.nextLine();
             option = in.next().toUpperCase();
         }
         System.out.println(EXIT_MESSAGE);

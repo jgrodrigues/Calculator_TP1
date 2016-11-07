@@ -50,71 +50,70 @@ public class Calculator {
     }
 
 
-    public double ce(String expression) {
+    public double calculateExpression(String expression) {
         System.out.println(expression);
 
         double result = Double.NaN;
         String firstParcel;
         String secondParcel;
 
-        if (Utilities.isDoubleValue(expression) || expression.equalsIgnoreCase(mem1.getMemoryName()) || expression.equalsIgnoreCase(mem2.getMemoryName())) {
-            result = literalExpression(expression);
-        } else {
-
-            if (expression.indexOf('(') == 0) {
-
+            if (expression.indexOf('(') == 0) { //isMEMORY
                 System.out.println("teste1");
-
                 firstParcel = expression.substring(1, expression.indexOf(')'));
+                result = literalExpression(firstParcel);
 
-                if (firstParcel.equalsIgnoreCase(mem1.getMemoryName())) {
-                    result = mem1.getMemoryValue();
-                } else if (firstParcel.equalsIgnoreCase(mem2.getMemoryName())) {
-                    result = mem2.getMemoryValue();
-                }
-            } else {
-
-            if (expression.indexOf('(') == 1) { //BINARY or LITERAL
-
+            } else if (Utilities.isDoubleValue(expression)){ //isDOUBLE
                 System.out.println("teste2");
+                result = literalExpression(expression);
 
-                char operand = expression.charAt(0);
-
-//            firstParcel = expression.substring(2, expression.indexOf(')'));
-//            secondParcel = expression.substring(expression.lastIndexOf('(') + 1, expression.length() - 1);
-
-                int secondParentheses = expression.indexOf('(', expression.indexOf(')'));
-                int length = expression.length();
+                 } else {
 
 
-                firstParcel = expression.substring(2, expression.indexOf(')'));
+
+                        if (expression.indexOf('(') == 1) { //isBINARY
+
+                            System.out.println("teste2");
+
+                            char operand = expression.charAt(0);
 
 
-                System.out.println(firstParcel);
-                secondParcel = expression.substring(secondParentheses + 1, length - 1);
-                System.out.println(secondParcel);
+                            int secondParentheses = expression.indexOf('(', expression.indexOf(')'));
+                            int length = expression.length();
 
 
-                result = binaryExpression(firstParcel, secondParcel, operand);
-
-            } else if (expression.charAt(0) != '(' && !Utilities.isDoubleValue(expression)) { //UNARY
+                            firstParcel = expression.substring(2, expression.indexOf(')'));
 
 
-                String operand = expression.substring(0, 3).toUpperCase();
+                            System.out.println(firstParcel);
+                            secondParcel = expression.substring(secondParentheses + 1, length - 1);
+                            System.out.println(secondParcel);
 
-                firstParcel = expression.substring(4, expression.indexOf(')'));
 
-                result = unaryExpression(firstParcel, operand);
+                            result = binaryExpression(firstParcel, secondParcel, operand);
 
-            }
-            }
-        }
+                        } else if (expression.charAt(0) != '(' && !Utilities.isDoubleValue(expression)) { //isUNARY
+
+
+                            String operand = expression.substring(0, 3).toUpperCase();
+
+                            firstParcel = expression.substring(4, expression.indexOf(')'));
+
+                            result = unaryExpression(firstParcel, operand);
+
+                        }
+                    }
         lastResult = result;
         return result;
 
     }
 
 
+    /**
+     * Solve Literal Expression
+     *
+     * @param expression
+     * @return
+     */
     public double literalExpression(String expression) {
         double value = Double.NaN;
         if (expression.equalsIgnoreCase(mem1.getMemoryName())) {
@@ -127,6 +126,13 @@ public class Calculator {
         return value;
     }
 
+    /**
+     * Solve Unary Expression
+     *
+     * @param parcel
+     * @param operand
+     * @return
+     */
     public double unaryExpression(String parcel, String operand) {
         double result = Double.NaN;
         switch (operand) {
@@ -189,30 +195,29 @@ public class Calculator {
         return value;
     }
 
-    public void avm(String memoryName) {
+    public void assignLastValue(String memoryName) {
         double lastResult = getLastResult();
         if (memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
             mem1.setValue(lastResult);
-            System.out.println(memoryName + ": " + lastResult);
+            System.out.printf("%s: %.2f\n", memoryName, lastResult);
         } else if(memoryName.equalsIgnoreCase(mem2.getMemoryName())) {
             mem2.setValue(lastResult);
-            System.out.println(memoryName + ": " + lastResult);
+            System.out.printf("%s: %.2f\n", memoryName, lastResult);
         }
     }
 
 
-    public void vm(String memoryName) {
+    public void getValue(String memoryName) {
         double memoryValue = getMemoryValue(memoryName);
         if (!(Double.isNaN(memoryValue))) {
-            System.out.println(memoryValue);
-
+            System.out.printf("%.2f\n", memoryValue);
         } else {
             System.out.println(NON_EXISTENT_MEMORY);
         }
     }
 
     //FIX EMPTY VALUE
-    public void lm() {
+    public void getMemoriesInfo() {
 //        boolean mem1NotEmpty = !mem1.getMemoryName().isEmpty();
 //        boolean mem2NotEmpty = !mem2.getMemoryName().isEmpty();
 
@@ -285,12 +290,5 @@ public class Calculator {
     public double sin (double value) {
         return Math.sin(value);
     }
-
-
-
-
-//    public double complexExpression() {
-//
-//    }
 
 }
