@@ -125,32 +125,35 @@ public class Calculator {
             parcels = expression.substring(expression.indexOf('('), expression.length()).trim();
         }
 
+        if(expression.indexOf('(') == -1) {
+            lastResult = Double.parseDouble(expression);
+        } else {
 
-        do {
+            do {
 
-            if(parcels.charAt(i) == '(') {
-                parentheses++;
-            } else if(parcels.charAt(i) == ')') {
-                parentheses--;
-            }
-            i++;
+                if (parcels.charAt(i) == '(') {
+                    parentheses++;
+                } else if (parcels.charAt(i) == ')') {
+                    parentheses--;
+                }
+                i++;
 
-        } while (parentheses != 0);
+            } while (parentheses != 0);
 
-        firstParcel = parcels.substring(1, i - 1);
+            firstParcel = parcels.substring(1, i - 1);
 
-        if (isBinaryOperator(operator)) {
-            secondParcel = parcels.substring(i, parcels.length() - 1).trim();
-            secondParcel = secondParcel.substring(1, secondParcel.length());
+            if (isBinaryOperator(operator)) {
+                secondParcel = parcels.substring(i, parcels.length() - 1).trim();
+                secondParcel = secondParcel.substring(1, secondParcel.length());
 
-            //System.out.println("Operator -> " + operator);
-            //System.out.println("Parcels -> " + parcels);
-            //System.out.println("FParcel -> " + firstParcel);
-            //System.out.println("SParcel -> " + secondParcel);
+                //System.out.println("Operator -> " + operator);
+                //System.out.println("Parcels -> " + parcels);
+                //System.out.println("FParcel -> " + firstParcel);
+                //System.out.println("SParcel -> " + secondParcel);
 
-            lastResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
+                lastResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
 
-        } else if (isUnaryOperator(operator)) {
+            } else if (isUnaryOperator(operator)) {
                 if (parcels.indexOf('(') != -1) {
 //                    System.out.println("Operador -> " + operator);
 //                    System.out.println("SParcel -> " + secondParcel);
@@ -160,34 +163,34 @@ public class Calculator {
                 }
 
 
-
-            //System.out.println("Operator -> " + operator);
-            //System.out.println("Parcels -> " + parcels);
-            //System.out.println("FParcel -> " + firstParcel);
+                //System.out.println("Operator -> " + operator);
+                //System.out.println("Parcels -> " + parcels);
+                //System.out.println("FParcel -> " + firstParcel);
 //            System.out.println("SParcel -> " + secondParcel);
-            //System.out.println("LAST RESULT");
+                //System.out.println("LAST RESULT");
 
-            if (Utilities.isDoubleValue(firstParcel)) {
-                //System.out.println("true");
-                lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
-            } else {
-                //System.out.println("false");
+                if (Utilities.isDoubleValue(firstParcel)) {
+                    //System.out.println("true");
+                    lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
+                } else {
+                    //System.out.println("false");
 //                secondParcel = Double.toString(unaryExpression(getExpressionValue(firstParcel), operator));
 
-                secondParcel = Double.toString(getExpressionValue(firstParcel));
-                String operator2 = operator;
-                //System.out.println(operator2);
+                    secondParcel = Double.toString(getExpressionValue(firstParcel));
+                    String operator2 = operator;
+                    //System.out.println(operator2);
 
-                //System.out.println("SParcel -> " + secondParcel);
-                lastResult = unaryExpression(getExpressionValue(secondParcel), operator2);
+                    //System.out.println("SParcel -> " + secondParcel);
+                    lastResult = unaryExpression(getExpressionValue(secondParcel), operator2);
+                }
+
+                //lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
+
+            } else {
+                lastResult = literalExpression(expression);
             }
 
-            //lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
-
-        } else {
-                lastResult = literalExpression(expression);
         }
-
         return lastResult;
 
     }
@@ -323,10 +326,10 @@ public class Calculator {
         double lastResult = getLastResult();
         if (memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
             mem1.setValue(lastResult);
-            System.out.printf("%s: %.2f\n", memoryName, lastResult);
+            //System.out.printf("%s: %.2f\n", memoryName, lastResult);
         } else if(memoryName.equalsIgnoreCase(mem2.getMemoryName())) {
             mem2.setValue(lastResult);
-            System.out.printf("%s: %.2f\n", memoryName, lastResult);
+            //System.out.printf("%s: %.2f\n", memoryName, lastResult);
         }
     }
 

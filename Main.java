@@ -7,7 +7,7 @@ public class Main {
      * Constants
      */
     public static final String NON_EXISTENT_OPTION = "Opcao inexistente.";
-    public static final String EXIT_MESSAGE = "Aplicacao terminada. Ate a proxima";
+    public static final String EXIT_MESSAGE = "Aplicacao terminada. Ate a proxima.";
     public static final String INVALID_EXPRESSION = "Expressao mal definida.";
 
     /**
@@ -69,6 +69,8 @@ public class Main {
                     String input = in.nextLine().toUpperCase().trim();
                     if (c1.isExpression(input)) {
                         System.out.printf("resultado: %.2f\n", c1.calculateExpression(input));
+//                    } else if(Utilities.isDoubleValue(input)){
+//                        System.out.printf("resultado: %.2f\n", input);
                     } else {
                         System.out.println(INVALID_EXPRESSION);
                     }
