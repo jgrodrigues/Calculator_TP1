@@ -68,7 +68,7 @@ public class Main {
                 case("CE"): //Calculate Expression
                     String input = in.nextLine().toUpperCase().trim();
                     if (c1.isExpression(input)) {
-                        System.out.printf("%.2f\n", c1.calculateExpression(input));
+                        System.out.printf("resultado: %.2f\n", c1.calculateExpression(input));
                     } else {
                         System.out.println(INVALID_EXPRESSION);
                     }

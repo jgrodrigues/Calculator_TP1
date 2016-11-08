@@ -82,12 +82,12 @@ public class Calculator {
     }
 
     /**
-     * *******************
+     * Calculate expression value
      *
      * @param expression
      * @return
      */
-    double getExpNumber(String expression) {
+    double getExpressionValue(String expression) {
         String operator = "";
         double number;
         if (expression.indexOf('(') != -1) {
@@ -101,7 +101,6 @@ public class Calculator {
         } else {
             number = getMemoryValue(expression);
         }
-
         return number;
     }
 
@@ -111,7 +110,7 @@ public class Calculator {
      * @param expression
      * @return
      */
-    public double calculateExpression(String expression) {
+    public double calculateExpression(String expression) { //System.out.println("Expression -> " + expression);
 
         String operator = "";
         String firstParcel;
@@ -120,6 +119,7 @@ public class Calculator {
         int i=0;
         int parentheses = 0;
 
+
         if (expression.indexOf('(') != -1) {
             operator = expression.substring(0, expression.indexOf('(')).trim();
             parcels = expression.substring(expression.indexOf('('), expression.length()).trim();
@@ -127,13 +127,14 @@ public class Calculator {
 
 
         do {
+
             if(parcels.charAt(i) == '(') {
                 parentheses++;
             } else if(parcels.charAt(i) == ')') {
                 parentheses--;
             }
-
             i++;
+
         } while (parentheses != 0);
 
         firstParcel = parcels.substring(1, i - 1);
@@ -142,14 +143,46 @@ public class Calculator {
             secondParcel = parcels.substring(i, parcels.length() - 1).trim();
             secondParcel = secondParcel.substring(1, secondParcel.length());
 
+            //System.out.println("Operator -> " + operator);
+            //System.out.println("Parcels -> " + parcels);
+            //System.out.println("FParcel -> " + firstParcel);
+            //System.out.println("SParcel -> " + secondParcel);
 
-            lastResult = binaryExpression(getExpNumber(firstParcel), getExpNumber(secondParcel), operator);
+            lastResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
 
         } else if (isUnaryOperator(operator)) {
                 if (parcels.indexOf('(') != -1) {
-                    operator = parcels.substring(0, expression.indexOf('(')).trim();
+//                    System.out.println("Operador -> " + operator);
+//                    System.out.println("SParcel -> " + secondParcel);
+//                    System.out.println("SParcel -> " + secondParcel);
+//
+//                        lastResult = unaryExpression(getExpressionValue(secondParcel), operator);
                 }
-            lastResult = unaryExpression(getExpNumber(firstParcel), operator);
+
+
+
+            //System.out.println("Operator -> " + operator);
+            //System.out.println("Parcels -> " + parcels);
+            //System.out.println("FParcel -> " + firstParcel);
+//            System.out.println("SParcel -> " + secondParcel);
+            //System.out.println("LAST RESULT");
+
+            if (Utilities.isDoubleValue(firstParcel)) {
+                //System.out.println("true");
+                lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
+            } else {
+                //System.out.println("false");
+//                secondParcel = Double.toString(unaryExpression(getExpressionValue(firstParcel), operator));
+
+                secondParcel = Double.toString(getExpressionValue(firstParcel));
+                String operator2 = operator;
+                //System.out.println(operator2);
+
+                //System.out.println("SParcel -> " + secondParcel);
+                lastResult = unaryExpression(getExpressionValue(secondParcel), operator2);
+            }
+
+            //lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
 
         } else {
                 lastResult = literalExpression(expression);
@@ -230,7 +263,7 @@ public class Calculator {
                 result = Math.floor(parcel);
                 break;
             case (ABS):
-                result = Math.floor(parcel);
+                result = Math.abs(parcel);
                 break;
         }
         return result;
@@ -270,10 +303,10 @@ public class Calculator {
      * @return
      */
     public double getMemoryValue (String memoryName) {
-        double value = 0;
-        if (memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
+        double value;
+        if (mem1 != null && memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
             value = mem1.getMemoryValue();
-        } else if (memoryName.equalsIgnoreCase(mem2.getMemoryName())) {
+        } else if (mem2 != null && memoryName.equalsIgnoreCase(mem2.getMemoryName())) {
             value = mem2.getMemoryValue();
         } else {
             value = Double.NaN;
@@ -299,13 +332,14 @@ public class Calculator {
 
 
     /**
-     * Get memory value
+     * Get memory value - REMOVE
      *
      * @param memoryName
      */
     public void getValue(String memoryName) {
         double memoryValue = getMemoryValue(memoryName);
         if (!(Double.isNaN(memoryValue))) {
+            System.out.printf("%s: ", memoryName);
             System.out.printf("%.2f\n", memoryValue);
         } else {
             System.out.println(NON_EXISTENT_MEMORY);
