@@ -18,6 +18,7 @@ public class Calculator {
     private static final String DIVISION = "/";
     private static final String MODULE = "%";
     private static final String SIN = "SIN";
+    private static final String SEN = "SEN";
     private static final String COS = "COS";
     private static final String LOG = "LOG";
     private static final String EXP = "EXP";
@@ -141,6 +142,19 @@ public class Calculator {
         return i;
     }
 
+    public int openParCount(String expression) {
+        //System.out.println("Exp" + expression);
+        int i = 0, parentheses = 0;
+        do {
+            if (expression.charAt(i) == openParentheses) {
+                parentheses++;
+            }
+            i++;
+        } while (i<expression.length());
+        //System.out.println("i = " + i);
+        return parentheses;
+    }
+
     /**
      * CE - Calculate Expression
      *
@@ -148,6 +162,7 @@ public class Calculator {
      * @return
      */
     public double calculateExpression(String expression) {
+        Double expressionResult;
         //System.out.println("Expression -> " + expression);
         String operator = "";
         String firstParcel;
@@ -159,49 +174,51 @@ public class Calculator {
             parcels = expression.substring(expression.indexOf(openParentheses), expression.length()).trim();
         }
         if(!hasOpenParentheses(expression)) {
-//            System.out.println("Expression -> " + expression);
+            //System.out.println("Expression -> " + expression);
             if (isMemoryName(expression)){
-//                System.out.println("1");
-                lastResult = getExpressionValue(expression);
+                expressionResult = getExpressionValue(expression);
             } else if (Utilities.isDoubleValue(expression)) {
-//                System.out.println("2");
-                lastResult = Double.parseDouble(expression);
+                expressionResult = Double.parseDouble(expression);
             } else {
-                lastResult = Double.NaN;
+                expressionResult = Double.NaN;
             }
         } else {
             int lastIndexParcel = getLastIndexExpression(parcels);
             firstParcel = parcels.substring(1, lastIndexParcel - 1);
             if (isBinaryOperator(operator)) {
-                secondParcel = parcels.substring(lastIndexParcel, parcels.length() - 1).trim();
-                secondParcel = secondParcel.substring(1, secondParcel.length());
-                lastResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
+                if (openParCount(parcels) != 1) {
+                    secondParcel = parcels.substring(lastIndexParcel, parcels.length() - 1).trim();
+                    secondParcel = secondParcel.substring(1, secondParcel.length());
+                    expressionResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
+                } else {
+                    expressionResult = Double.NaN;
+                }
             } else if (isUnaryOperator(operator)) {
- //               System.out.println(firstParcel);
+               //System.out.println(firstParcel);
 //                if (hasOpenParentheses(parcels)) {
 //                }
                 if (Utilities.isDoubleValue(firstParcel)) {
-                    lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
-                } else if (!Utilities.isDoubleValue(firstParcel) && Utilities.isDoubleValue(firstParcel.replaceAll("\\s", ""))) {
-                    lastResult = Double.NaN;
+                    expressionResult = unaryExpression(getExpressionValue(firstParcel), operator);
+                } else if (!Utilities.isDoubleValue(firstParcel) && Utilities.isDoubleValue(firstParcel.replaceAll("\\s", ""))) { //g2in 3  .  412
+                    expressionResult = Double.NaN;
                 } else {
                     secondParcel = Double.toString(getExpressionValue(firstParcel));
                     String operator2 = operator;
-                    lastResult = unaryExpression(getExpressionValue(secondParcel), operator2);
+                    expressionResult = unaryExpression(getExpressionValue(secondParcel), operator2);
                 }
             } else {
-                lastResult = literalExpression(expression);
+                expressionResult = literalExpression(expression);
             }
         }
-        return lastResult;
+        setLastValue(expressionResult);
+        return expressionResult;
     }
 
-//    public boolean hasEmptySpaces(String expression) {
-//        int i = 0;
-//        do {
-//
-//        }while(i<expression.length());
-//    }
+    public void setLastValue(Double expressionResult) {
+        if (!Double.isNaN(expressionResult)) {
+            lastResult = expressionResult;
+        }
+    }
 
     /**
      * Calculate Literal Expression
@@ -231,7 +248,7 @@ public class Calculator {
     public double unaryExpression(double parcel, String operator) {
         double result = Double.NaN;
         switch (operator) {
-            case ("sen"):
+            case (SEN):
                 result = Math.sin(parcel);
                 break;
             case (SIN):
@@ -315,9 +332,15 @@ public class Calculator {
     public void assignLastValue(String memoryName) {
         double lastResult = getLastResult();
         if (memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
-            mem1.setValue(lastResult);
+            if (!Double.isNaN(lastResult)) {
+                mem1.setValue(lastResult);
+            }
         } else if(memoryName.equalsIgnoreCase(mem2.getMemoryName())) {
-            mem2.setValue(lastResult);
+            if (!Double.isNaN(lastResult)) {
+                mem2.setValue(lastResult);
+            }
+        } else {
+            System.out.println("Memoria nao existente."); //Corrigir
         }
     }
 
@@ -359,6 +382,8 @@ public class Calculator {
         }
     }
 
+    //Operadores possivelmente desnecessarios
+
     /**
      * Check if is a binary operator
      *
@@ -376,7 +401,7 @@ public class Calculator {
      * @return
      */
     public boolean isUnaryOperator(String operator) {
-        return operator.equals(SIN) || operator.equals(COS) || operator.equals(EXP) || operator.equals(LOG) ||
+        return operator.equals(SIN) || operator.equals(SEN) || operator.equals(COS) || operator.equals(EXP) || operator.equals(LOG) ||
                 operator.equals(ROUND) || operator.equals(CEIL) || operator.equals(FLOOR) || operator.equals(ABS);
     }
 
