@@ -24,7 +24,12 @@ public class Main {
 
     private static void calcExp(String input, Calculator c1) {
         if (c1.hasEqualParentheses(input)) {
-            System.out.printf("resultado: %.2f\n", c1.calculateExpression(input));
+            double result = c1.calculateExpression(input);
+            if (!Double.isNaN(result)) {
+                System.out.printf("resultado: %.2f\n", result);
+            } else {
+                System.out.println(INVALID_EXPRESSION);
+            }
         } else {
             System.out.println(INVALID_EXPRESSION);
         }

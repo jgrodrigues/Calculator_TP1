@@ -26,6 +26,7 @@ public class Calculator {
     private static final String FLOOR = "FLOOR";
     private static final String ABS = "ABS";
 
+    //Others
     private double lastResult;
     private static final char openParentheses = '(';
     private static final char closedParentheses = ')';
@@ -88,6 +89,23 @@ public class Calculator {
         return expression.indexOf(openParentheses) != -1;
     }
 
+    public boolean isMemoryName(String expression) {
+        boolean isMemory = false;
+        if (mem1 != null || mem2 != null) {
+            if (mem1 != null ) {
+                if (expression.equalsIgnoreCase(mem1.getMemoryName())) {
+                    isMemory = true;
+                }
+            }
+            if (mem2 != null) {
+                if (expression.equalsIgnoreCase(mem2.getMemoryName())) {
+                    isMemory = true;
+                }
+            }
+        }
+        return isMemory;
+    }
+
     /**
      * Calculate expression value
      *
@@ -100,7 +118,6 @@ public class Calculator {
         if (hasOpenParentheses(expression)) {
             operator = expression.substring(0, expression.indexOf(openParentheses)).trim();
         }
-
         if (isBinaryOperator(operator) || isUnaryOperator(operator)) {
             number = calculateExpression(expression);
         } else if (Utilities.isDoubleValue(expression)) {
@@ -142,7 +159,16 @@ public class Calculator {
             parcels = expression.substring(expression.indexOf(openParentheses), expression.length()).trim();
         }
         if(!hasOpenParentheses(expression)) {
-            lastResult = Double.parseDouble(expression);
+//            System.out.println("Expression -> " + expression);
+            if (isMemoryName(expression)){
+//                System.out.println("1");
+                lastResult = getExpressionValue(expression);
+            } else if (Utilities.isDoubleValue(expression)) {
+//                System.out.println("2");
+                lastResult = Double.parseDouble(expression);
+            } else {
+                lastResult = Double.NaN;
+            }
         } else {
             int lastIndexParcel = getLastIndexExpression(parcels);
             firstParcel = parcels.substring(1, lastIndexParcel - 1);
@@ -161,6 +187,7 @@ public class Calculator {
                     lastResult = unaryExpression(getExpressionValue(secondParcel), operator2);
                 }
             } else {
+                System.out.println(operator);
                 lastResult = literalExpression(expression);
             }
         }
@@ -176,11 +203,10 @@ public class Calculator {
      * @return
      */
     public double literalExpression(String expression) {
+        System.out.println(expression);
         double value;
-        if (expression.equalsIgnoreCase(mem1.getMemoryName())) {
-            value =  mem1.getMemoryValue();
-        } else if (expression.equalsIgnoreCase(mem2.getMemoryName())) {
-            value = mem2.getMemoryValue();
+        if (isMemoryName(expression)) {
+            value =  getExpressionValue(expression);
         } else {
             value = Double.parseDouble(expression);
         }
@@ -197,6 +223,9 @@ public class Calculator {
     public double unaryExpression(double parcel, String operator) {
         double result = Double.NaN;
         switch (operator) {
+            case ("sen"):
+                result = Math.sin(parcel);
+                break;
             case (SIN):
                 result = Math.sin(parcel);
                 break;
