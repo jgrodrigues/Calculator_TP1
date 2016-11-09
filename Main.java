@@ -22,19 +22,21 @@ public class Main {
                 "S - Sair\n");
     }
 
-
+    private static void calcExp(String input, Calculator c1) {
+        if (c1.hasEqualParentheses(input)) {
+            System.out.printf("resultado: %.2f\n", c1.calculateExpression(input));
+        } else {
+            System.out.println(INVALID_EXPRESSION);
+        }
+    }
 
 
     public static void main(String[] args) {
-
-
         Scanner in = new Scanner(System.in);
         Calculator c1;
-
         String memories = in.nextLine().trim();
-        String memory1 = "";
-        String memory2 = "";
-
+        String memory1;
+        String memory2;
         if (memories.isEmpty()) {
             c1 = new Calculator();
         } else if (memories.indexOf(' ') == -1) {
@@ -45,19 +47,8 @@ public class Main {
             c1 = new Calculator(memory1, memory2);
         }
 
-
-
-
-
-//        showOptions();
-
-
         String option = in.next().toUpperCase();
-
         while(!option.equals("S")) {
-
-
-
             switch (option) {
                 case ("VM"): //Return value of memory
                     c1.getValue(in.next());
@@ -67,27 +58,18 @@ public class Main {
                     break;
                 case("CE"): //Calculate Expression
                     String input = in.nextLine().toUpperCase().trim();
-                    if (c1.isExpression(input)) {
-                        System.out.printf("resultado: %.2f\n", c1.calculateExpression(input));
-//                    } else if(Utilities.isDoubleValue(input)){
-//                        System.out.printf("resultado: %.2f\n", input);
-                    } else {
-                        System.out.println(INVALID_EXPRESSION);
-                    }
+                    calcExp(input, c1);
                     break;
                 case("AVM"): //Set last result value to a memory
                     c1.assignLastValue(in.next());
                     break;
                 case ("A"): //Help Menu
-//                    showOptions();
+                    showOptions();
                     break;
                 default:
-                    //DEBUG
-                    System.out.println(option);
                     System.out.println(NON_EXISTENT_OPTION);
                     break;
             }
-//            in.nextLine();
             option = in.next().toUpperCase();
         }
         System.out.println(EXIT_MESSAGE);

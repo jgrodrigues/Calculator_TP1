@@ -25,7 +25,10 @@ public class Calculator {
     private static final String CEIL = "CEIL";
     private static final String FLOOR = "FLOOR";
     private static final String ABS = "ABS";
+
     private double lastResult;
+    private static final char openParentheses = '(';
+    private static final char closedParentheses = ')';
 
     //Memories
     private Memory mem1;
@@ -60,18 +63,18 @@ public class Calculator {
     }
 
     /**
-     * Check if input is an expression
+     * Check if input has equal number of open and closed parentheses
      *
      * @param expression
      * @return
      */
-    public boolean isExpression(String expression){
+    public boolean hasEqualParentheses(String expression){
         int parentheses = 0;
         int i = 0;
         do{
-            if (expression.charAt(i) == '(') {
+            if (expression.charAt(i) == openParentheses) {
                 parentheses += 1;
-            } else if(expression.charAt(i) == ')') {
+            } else if(expression.charAt(i) == closedParentheses) {
                 parentheses -= 1;
             }
 
@@ -81,17 +84,21 @@ public class Calculator {
         return parentheses == 0;
     }
 
+    public boolean hasOpenParentheses(String expression) {
+        return expression.indexOf(openParentheses) != -1;
+    }
+
     /**
      * Calculate expression value
      *
      * @param expression
      * @return
      */
-    double getExpressionValue(String expression) {
+    public double getExpressionValue(String expression) {
         String operator = "";
         double number;
-        if (expression.indexOf('(') != -1) {
-            operator = expression.substring(0, expression.indexOf('(')).trim();
+        if (hasOpenParentheses(expression)) {
+            operator = expression.substring(0, expression.indexOf(openParentheses)).trim();
         }
 
         if (isBinaryOperator(operator) || isUnaryOperator(operator)) {
@@ -104,117 +111,63 @@ public class Calculator {
         return number;
     }
 
+    public int getLastIndexExpression(String expression) {
+        int i = 0, parentheses = 0;
+        do {
+            if (expression.charAt(i) == openParentheses) {
+                parentheses++;
+            } else if (expression.charAt(i) == closedParentheses) {
+                parentheses--;
+            }
+            i++;
+        } while (parentheses != 0);
+        return i;
+    }
+
     /**
      * CE - Calculate Expression
      *
      * @param expression
      * @return
      */
-    public double calculateExpression(String expression) { //System.out.println("Expression -> " + expression);
-
+    public double calculateExpression(String expression) {
+        //System.out.println("Expression -> " + expression);
         String operator = "";
         String firstParcel;
         String secondParcel;
         String parcels = "";
-        int i=0;
-        int parentheses = 0;
 
-
-        if (expression.indexOf('(') != -1) {
-            operator = expression.substring(0, expression.indexOf('(')).trim();
-            parcels = expression.substring(expression.indexOf('('), expression.length()).trim();
+        if (hasOpenParentheses(expression)) {
+            operator = expression.substring(0, expression.indexOf(openParentheses)).trim();
+            parcels = expression.substring(expression.indexOf(openParentheses), expression.length()).trim();
         }
-
-        if(expression.indexOf('(') == -1) {
+        if(!hasOpenParentheses(expression)) {
             lastResult = Double.parseDouble(expression);
         } else {
-
-            do {
-
-                if (parcels.charAt(i) == '(') {
-                    parentheses++;
-                } else if (parcels.charAt(i) == ')') {
-                    parentheses--;
-                }
-                i++;
-
-            } while (parentheses != 0);
-
-            firstParcel = parcels.substring(1, i - 1);
-
+            int lastIndexParcel = getLastIndexExpression(parcels);
+            firstParcel = parcels.substring(1, lastIndexParcel - 1);
             if (isBinaryOperator(operator)) {
-                secondParcel = parcels.substring(i, parcels.length() - 1).trim();
+                secondParcel = parcels.substring(lastIndexParcel, parcels.length() - 1).trim();
                 secondParcel = secondParcel.substring(1, secondParcel.length());
-
-                //System.out.println("Operator -> " + operator);
-                //System.out.println("Parcels -> " + parcels);
-                //System.out.println("FParcel -> " + firstParcel);
-                //System.out.println("SParcel -> " + secondParcel);
-
                 lastResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
-
             } else if (isUnaryOperator(operator)) {
-                if (parcels.indexOf('(') != -1) {
-//                    System.out.println("Operador -> " + operator);
-//                    System.out.println("SParcel -> " + secondParcel);
-//                    System.out.println("SParcel -> " + secondParcel);
-//
-//                        lastResult = unaryExpression(getExpressionValue(secondParcel), operator);
+                if (hasOpenParentheses(parcels)) {
                 }
-
-
-                //System.out.println("Operator -> " + operator);
-                //System.out.println("Parcels -> " + parcels);
-                //System.out.println("FParcel -> " + firstParcel);
-//            System.out.println("SParcel -> " + secondParcel);
-                //System.out.println("LAST RESULT");
-
                 if (Utilities.isDoubleValue(firstParcel)) {
-                    //System.out.println("true");
                     lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
                 } else {
-                    //System.out.println("false");
-//                secondParcel = Double.toString(unaryExpression(getExpressionValue(firstParcel), operator));
-
                     secondParcel = Double.toString(getExpressionValue(firstParcel));
                     String operator2 = operator;
-                    //System.out.println(operator2);
-
-                    //System.out.println("SParcel -> " + secondParcel);
                     lastResult = unaryExpression(getExpressionValue(secondParcel), operator2);
                 }
-
-                //lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
-
             } else {
                 lastResult = literalExpression(expression);
             }
-
         }
         return lastResult;
-
     }
 
-    /**
-     * Check if is a binary operator
-     *
-     * @param operator
-     * @return
-     */
-    public boolean isBinaryOperator(String operator) {
-        return operator.equals(ADD) || operator.equals(MINUS) || operator.equals(DIVISION) || operator.equals(MODULE) || operator.equals(PRODUCT);
-    }
 
-    /**
-     * Check if is a unary operator
-     *
-     * @param operator
-     * @return
-     */
-    public boolean isUnaryOperator(String operator) {
-        return operator.equals(SIN) || operator.equals(COS) || operator.equals(EXP) || operator.equals(LOG) ||
-                operator.equals(ROUND) || operator.equals(CEIL) || operator.equals(FLOOR) || operator.equals(ABS);
-    }
 
     /**
      * Calculate Literal Expression
@@ -326,10 +279,8 @@ public class Calculator {
         double lastResult = getLastResult();
         if (memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
             mem1.setValue(lastResult);
-            //System.out.printf("%s: %.2f\n", memoryName, lastResult);
         } else if(memoryName.equalsIgnoreCase(mem2.getMemoryName())) {
             mem2.setValue(lastResult);
-            //System.out.printf("%s: %.2f\n", memoryName, lastResult);
         }
     }
 
@@ -371,7 +322,32 @@ public class Calculator {
         }
     }
 
+    /**
+     * Check if is a binary operator
+     *
+     * @param operator
+     * @return
+     */
+    public boolean isBinaryOperator(String operator) {
+        return operator.equals(ADD) || operator.equals(MINUS) || operator.equals(DIVISION) || operator.equals(MODULE) || operator.equals(PRODUCT);
+    }
 
+    /**
+     * Check if is a unary operator
+     *
+     * @param operator
+     * @return
+     */
+    public boolean isUnaryOperator(String operator) {
+        return operator.equals(SIN) || operator.equals(COS) || operator.equals(EXP) || operator.equals(LOG) ||
+                operator.equals(ROUND) || operator.equals(CEIL) || operator.equals(FLOOR) || operator.equals(ABS);
+    }
+
+    /**
+     * Get Last Value calculated
+     *
+     * @return
+     */
     public double getLastResult() {
         return lastResult;
     }
