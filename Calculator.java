@@ -177,24 +177,31 @@ public class Calculator {
                 secondParcel = secondParcel.substring(1, secondParcel.length());
                 lastResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
             } else if (isUnaryOperator(operator)) {
-                if (hasOpenParentheses(parcels)) {
-                }
+ //               System.out.println(firstParcel);
+//                if (hasOpenParentheses(parcels)) {
+//                }
                 if (Utilities.isDoubleValue(firstParcel)) {
                     lastResult = unaryExpression(getExpressionValue(firstParcel), operator);
+                } else if (!Utilities.isDoubleValue(firstParcel) && Utilities.isDoubleValue(firstParcel.replaceAll("\\s", ""))) {
+                    lastResult = Double.NaN;
                 } else {
                     secondParcel = Double.toString(getExpressionValue(firstParcel));
                     String operator2 = operator;
                     lastResult = unaryExpression(getExpressionValue(secondParcel), operator2);
                 }
             } else {
-                System.out.println(operator);
                 lastResult = literalExpression(expression);
             }
         }
         return lastResult;
     }
 
-
+//    public boolean hasEmptySpaces(String expression) {
+//        int i = 0;
+//        do {
+//
+//        }while(i<expression.length());
+//    }
 
     /**
      * Calculate Literal Expression
@@ -203,12 +210,13 @@ public class Calculator {
      * @return
      */
     public double literalExpression(String expression) {
-        System.out.println(expression);
         double value;
         if (isMemoryName(expression)) {
             value =  getExpressionValue(expression);
-        } else {
+        } else if (Utilities.isDoubleValue(expression)) {
             value = Double.parseDouble(expression);
+        } else {
+            value = Double.NaN;
         }
         return value;
     }
