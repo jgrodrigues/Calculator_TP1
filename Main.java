@@ -6,9 +6,9 @@ public class Main {
     /**
      * Constants
      */
-    public static final String NON_EXISTENT_OPTION = "Opcao inexistente.";
-    public static final String EXIT_MESSAGE = "Aplicacao terminada. Ate a proxima.";
-    public static final String INVALID_EXPRESSION = "Expressao mal definida.";
+    private static final String NON_EXISTENT_OPTION = "Opcao inexistente.";
+    private static final String EXIT_MESSAGE = "Aplicacao terminada. Ate a proxima.";
+    private static final String INVALID_EXPRESSION = "Expressao mal definida.";
 
     /**
      * SHOW HELP MENU
@@ -25,7 +25,7 @@ public class Main {
     private static void calcExp(String input, Calculator c1) {
         if (c1.hasEqualParentheses(input)) {
             double result = c1.calculateExpression(input);
-            if (!Double.isNaN(result)) {
+            if (c1.hasEqualParentheses(input) & !Double.isNaN(result)) {
                 System.out.printf("resultado: %.2f\n", result);
             } else {
                 System.out.println(INVALID_EXPRESSION);
