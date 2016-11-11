@@ -30,6 +30,7 @@ public class Main {
      * @param c1 Calculator object
      */
     private static void calcExp(String input, Calculator c1) {
+        if (c1.hasEqualParentheses(input)) { //Only proceed if expression has the same number of opened and closed parentheses(validation)
             double result = c1.calculateExpression(input);
             if (!Double.isNaN(result)) {
                 System.out.printf("resultado: %.2f\n", result);
@@ -37,6 +38,9 @@ public class Main {
             } else {
                 System.out.println(INVALID_EXPRESSION);
             }
+        } else {
+            System.out.println(INVALID_EXPRESSION);
+        }
     }
 
     /**

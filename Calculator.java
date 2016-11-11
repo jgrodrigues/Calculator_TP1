@@ -378,48 +378,41 @@ public class Calculator {
      */
     public double calculateExpression(String expression) {
         Double expressionResult = Double.NaN; //Result if expression eventually doesn't succeed in validation(if isn't valid)
-        String operator = "";
+        String operator;
         String firstParcel;
         String secondParcel;
-        String parcels = "";
+        String parcels;
 
-        if (hasEqualParentheses(expression)) { //Only proceed if expression has the same number of opened and closed parentheses(validation)
-            if (hasOpenParentheses(expression)) {
-                if (hasEqualParentheses(expression)) {
-                    operator = expression.substring(0, expression.indexOf(OPEN_PARENTHESES)).trim();
-                    parcels = expression.substring(expression.indexOf(OPEN_PARENTHESES), expression.length()).trim();
+        if (!hasOpenParentheses(expression)) {
+            if (validateExpression(expression, NO_PARENTHESES)) { //Only proceed if expression passes validation of non parentheses expressions
+                if (isMemoryName(expression)) {
+                    expressionResult = getExpressionValue(expression);
+                } else if (Utilities.isDoubleValue(expression)) {
+                    expressionResult = Double.parseDouble(expression);
                 }
             }
-
-            if (!hasOpenParentheses(expression)) {
-                if (validateExpression(expression, NO_PARENTHESES)) { //Only proceed if expression passes validation of non parentheses expressions
-                    if (isMemoryName(expression)) {
-                        expressionResult = getExpressionValue(expression);
-                    } else if (Utilities.isDoubleValue(expression)) {
-                        expressionResult = Double.parseDouble(expression);
+        }else {
+            operator = expression.substring(0, expression.indexOf(OPEN_PARENTHESES)).trim();
+            parcels = expression.substring(expression.indexOf(OPEN_PARENTHESES), expression.length()).trim();
+            int lastIndexParcel = getLastIndexExpression(parcels);
+            firstParcel = parcels.substring(1, lastIndexParcel - 1);
+            if (isBinaryOperator(operator)) {
+                if (validateExpression(parcels, BINARY_OPERATION)) { //Only proceed if expression passes binary operations validation
+                    secondParcel = parcels.substring(lastIndexParcel, parcels.length() - 1).trim();
+                    secondParcel = secondParcel.substring(1, secondParcel.length());
+                    expressionResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
+                }
+            } else if (isUnaryOperator(operator)) {
+                if (validateExpression(firstParcel, UNARY_OPERATION)) { //Only proceed if expression passes unary operation validation
+                    if (Utilities.isDoubleValue(firstParcel)) {
+                        expressionResult = unaryExpression(getExpressionValue(firstParcel), operator);
+                    } else {
+                        secondParcel = Double.toString(getExpressionValue(firstParcel));
+                        expressionResult = unaryExpression(getExpressionValue(secondParcel), operator);
                     }
                 }
-            } else {
-                int lastIndexParcel = getLastIndexExpression(parcels);
-                firstParcel = parcels.substring(1, lastIndexParcel - 1);
-                if (isBinaryOperator(operator)) {
-                    if (validateExpression(parcels, BINARY_OPERATION)) { //Only proceed if expression passes binary operations validation
-                        secondParcel = parcels.substring(lastIndexParcel, parcels.length() - 1).trim();
-                        secondParcel = secondParcel.substring(1, secondParcel.length());
-                        expressionResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
-                    }
-                } else if (isUnaryOperator(operator)) {
-                    if (validateExpression(firstParcel, UNARY_OPERATION)) { //Only proceed if expression passes unary operation validation
-                        if (Utilities.isDoubleValue(firstParcel)) {
-                            expressionResult = unaryExpression(getExpressionValue(firstParcel), operator);
-                        } else {
-                            secondParcel = Double.toString(getExpressionValue(firstParcel));
-                            expressionResult = unaryExpression(getExpressionValue(secondParcel), operator);
-                        }
-                    }
-                } else if (validateExpression(expression, LITERAL_OPERATION)) { //Only proceed if expression passes literal operation validation
-                    expressionResult = calcLiteralExpression(expression);
-                }
+            } else if (validateExpression(expression, LITERAL_OPERATION)) { //Only proceed if expression passes literal operation validation
+                expressionResult = calcLiteralExpression(expression);
             }
         }
         return expressionResult;
