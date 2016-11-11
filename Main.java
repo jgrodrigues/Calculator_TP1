@@ -6,14 +6,14 @@ public class Main {
     /**
      * Constants
      */
-    private static final String NON_EXISTENT_OPTION = "Opcao inexistente.";
-    private static final String EXIT_MESSAGE = "Aplicacao terminada. Ate a proxima.";
-    private static final String INVALID_EXPRESSION = "Expressao mal definida.";
+    public static final String NON_EXISTENT_OPTION = "Opcao inexistente.";
+    public static final String EXIT_MESSAGE = "Aplicacao terminada. Ate a proxima.";
+    public static final String INVALID_EXPRESSION = "Expressao mal definida.";
     public static final String NO_MEMORY_MESSAGE = "Calculadora sem memorias.";
     public static final String NON_EXISTENT_MEMORY = "Memoria nao existente.";
 
     /**
-     * SHOW HELP MENU
+     * Show help menu
      */
     private static void showOptions() {
         System.out.printf("VM - Consultar o valor da memoria\n" +
@@ -107,6 +107,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Calculator c1;
+
         String memories = in.nextLine().trim();
         String memory1;
         String memory2;
