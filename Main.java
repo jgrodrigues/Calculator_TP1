@@ -1,11 +1,12 @@
-import java.util.Scanner;
+/**
+ * Created by Jonas Rodrigues, ID 49806 on 29/10/2016.
+ */
 
+import java.util.Scanner;
 
 public class Main {
 
-    /**
-     * Constants
-     */
+    /* Constants */
     public static final String NON_EXISTENT_OPTION = "Opcao inexistente.";
     public static final String EXIT_MESSAGE = "Aplicacao terminada. Ate a proxima.";
     public static final String INVALID_EXPRESSION = "Expressao mal definida.";
@@ -26,8 +27,9 @@ public class Main {
 
     /**
      * Calculate an expression given by the user
+     *
      * @param input the String expression given by the user
-     * @param c1 Calculator object
+     * @param c1    Calculator object
      */
     private static void calcExp(String input, Calculator c1) {
         if (c1.hasEqualParentheses(input)) { //Only proceed if expression has the same number of opened and closed parentheses(validation)
@@ -45,8 +47,9 @@ public class Main {
 
     /**
      * Assign last result from a valid expression if memory name provided is equal to mem1 name or mem2 name
+     *
      * @param memoryName the String referencing the memory we want to assign the value
-     * @param c1 Calculator object
+     * @param c1         Calculator object
      */
     private static void assignMemoryValue(String memoryName, Calculator c1) {
         double lastResult = c1.getLastResult();
@@ -63,8 +66,9 @@ public class Main {
 
     /**
      * Get the value of a certain memory
+     *
      * @param memoryName the String indicating the memory which we want to consult the value
-     * @param c1 Calculator object
+     * @param c1         Calculator object
      */
     private static void getMemoryValue(String memoryName, Calculator c1) {
         if (c1.isMemoryName(memoryName)) {
@@ -87,11 +91,12 @@ public class Main {
 
     /**
      * Shows all existing memories and corresponding values
+     *
      * @param c1 Calculator object
      */
     private static void getMemoriesInfo(Calculator c1) {
         if (c1.hasMemories()) {
-            if(c1.hasMemory1()) {
+            if (c1.hasMemory1()) {
                 String mem1Name = c1.getMemory1Name();
                 double mem1Value = c1.getMemoryValue(mem1Name);
                 System.out.printf("%s: ", mem1Name);
@@ -126,7 +131,7 @@ public class Main {
         }
 
         String option = in.next().toUpperCase();
-        while(!option.equals("S")) {
+        while (!option.equals("S")) {
             switch (option) {
                 case ("VM"): //Return value of a certain memory
                     getMemoryValue(in.next(), c1);
@@ -134,11 +139,11 @@ public class Main {
                 case ("LM"): //Return value and name of all memories
                     getMemoriesInfo(c1);
                     break;
-                case("CE"): //Calculate Expression
+                case ("CE"): //Calculate Expression
                     String input = in.nextLine().toUpperCase().trim();
                     calcExp(input, c1);
                     break;
-                case("AVM"): //Set last result calculated to a certain memory
+                case ("AVM"): //Set last result calculated to a certain memory
                     assignMemoryValue(in.next(), c1);
                     break;
                 case ("A"): //Help Menu

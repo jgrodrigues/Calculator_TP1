@@ -1,7 +1,6 @@
 /**
- * Created by jonas on 29/10/2016.
+ * Created by Jonas Rodrigues, ID 49806 on 29/10/2016.
  */
-
 
 public class Calculator {
 
@@ -163,7 +162,7 @@ public class Calculator {
      */
     public double getExpressionValue(String expression) {
         String operator = "";
-        double number = Double.NaN;
+        double number;
         if (hasOpenParentheses(expression)) {
             operator = expression.substring(0, expression.indexOf(OPEN_PARENTHESES)).trim();
         }
@@ -171,7 +170,7 @@ public class Calculator {
             number = calculateExpression(expression);
         } else if (Utilities.isDoubleValue(expression)) {
             number = Double.parseDouble(expression);
-        } else if (hasMemories()) {
+        } else {
             number = getMemoryValue(expression);
         }
         return number;
@@ -391,7 +390,7 @@ public class Calculator {
                     expressionResult = Double.parseDouble(expression);
                 }
             }
-        }else {
+        } else {
             operator = expression.substring(0, expression.indexOf(OPEN_PARENTHESES)).trim();
             parcels = expression.substring(expression.indexOf(OPEN_PARENTHESES), expression.length()).trim();
             int lastIndexParcel = getLastIndexExpression(parcels);

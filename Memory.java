@@ -1,6 +1,7 @@
 /**
- * Created by jonas on 29/10/2016.
+ * Created by Jonas Rodrigues, ID 49806 on 29/10/2016.
  */
+
 public class Memory {
 
     private double memoryValue;
@@ -14,7 +15,7 @@ public class Memory {
     /**
      * Get Memory Value
      *
-     * @return
+     * @return the value of the memory
      */
     public double getMemoryValue() {
         return memoryValue;
@@ -23,7 +24,7 @@ public class Memory {
     /**
      * Get Memory Name
      *
-     * @return
+     * @return the name of the memory
      */
     public String getMemoryName() {
         return memoryName;
@@ -32,7 +33,7 @@ public class Memory {
     /**
      * Get Memory Value
      *
-     * @param memoryValue
+     * @param memoryValue the new value to assign to the memory
      */
     public void setValue(double memoryValue) {
         this.memoryValue = memoryValue;
