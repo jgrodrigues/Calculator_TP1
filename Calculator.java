@@ -3,21 +3,11 @@
  */
 
 
-/***********REMOVER PRINTS CLASSE CALCULADORA****************/
-/***Constantes***/
-/****precondicoes @pre*******/
-
 public class Calculator {
 
     /**
-     * Instance Variables
+     * Constants
      */
-
-    //Error messages
-    public static final String NON_EXISTENT_MEMORY = "Memoria nao existente.";
-    public static final String NO_MEMORY_MESSAGE = "Calculadora sem memorias.";
-
-    //Operators
     public static final String MINUS = "-";
     public static final String ADD = "+";
     public static final String PRODUCT = "*";
@@ -32,24 +22,26 @@ public class Calculator {
     public static final String CEIL = "CEIL";
     public static final String FLOOR = "FLOOR";
     public static final String ABS = "ABS";
-
     public static final String UNARY_OPERATION = "unary";
     public static final String BINARY_OPERATION = "binary";
     public static final String LITERAL_OPERATION = "literal";
-    //public static final String UNARY_OPERATION = "unary";
     public static final String NO_PARENTHESES = "noParentheses";
-
-    //Others
-
     public static final char OPEN_PARENTHESES = '(';
     public static final char CLOSED_PARENTHESES = ')';
 
+    /**
+     * Instance Variables
+     */
     private double lastResult;
     private Memory mem1;
     private Memory mem2;
 
     /**
-     * Constructor
+     * Constructors
+     */
+
+    /**
+     * Create a calculator with no memories
      */
     public Calculator() {
         lastResult = 0;
@@ -57,12 +49,21 @@ public class Calculator {
         mem2 = null;
     }
 
+    /**
+     * Create a calculator with 1 memory
+     * @param name the String corresponding to the mem1 name
+     */
     public Calculator(String name) {
         lastResult = 0;
         mem1 = new Memory(name);
         mem2 = null;
     }
 
+    /**
+     * Create a calculator with 2 memories
+     * @param name1 the String corresponding to the mem1 name
+     * @param name2 the String corresponding to the mem2 name
+     */
     public Calculator(String name1, String name2) {
         lastResult = 0;
         if(name1.equals(name2)) {
@@ -74,11 +75,12 @@ public class Calculator {
         }
     }
 
+
     /**
      * Check if input has equal number of open and closed parentheses
      *
-     * @param expression
-     * @return
+     * @param expression the String that may have or not equal open and closed parentheses
+     * @return true if the expression has an equal number of open and closed parentheses, or false if otherwise
      */
     public boolean hasEqualParentheses(String expression){
         int parentheses = 0;
@@ -94,6 +96,11 @@ public class Calculator {
         return parentheses == 0;
     }
 
+    /**
+     * Checks if an expression as any open parentheses
+     * @param expression the String which might contain open parentheses
+     * @return true if expressions has any open parentheses
+     */
     public boolean hasOpenParentheses(String expression) {
         return expression.indexOf(OPEN_PARENTHESES) != -1;
     }
@@ -123,7 +130,7 @@ public class Calculator {
      */
     public double getExpressionValue(String expression) {
         String operator = "";
-        double number;
+        double number = Double.NaN;
         if (hasOpenParentheses(expression)) {
             operator = expression.substring(0, expression.indexOf(OPEN_PARENTHESES)).trim();
         }
@@ -131,12 +138,17 @@ public class Calculator {
             number = calculateExpression(expression);
         } else if (Utilities.isDoubleValue(expression)) {
             number = Double.parseDouble(expression);
-        } else {
+        } else if (hasMemories()){
             number = getMemoryValue(expression);
         }
         return number;
     }
 
+    /**
+     *Gets Last index of an expression
+     * @param expression the String which we intend to get the last index of
+     * @return the last index of the expression
+     */
     public int getLastIndexExpression(String expression) {
         int i = 0, parentheses = 0;
         do {
@@ -151,7 +163,12 @@ public class Calculator {
     }
 
 
-    public int openParCount(String expression) {
+    /**
+     * Count number of parentheses
+     * @param expression the String which we intend to know exactly how many open parentheses it has
+     * @return an integer with the exact number of open parentheses the String expression has
+     */
+    public int parCount(String expression) {
         int i = 0, parentheses = 0;
         do {
             if (expression.charAt(i) == OPEN_PARENTHESES) {
@@ -163,19 +180,18 @@ public class Calculator {
     }
 
     /**
-     * CE - Calculate Expression
-     *
-     * @param expression
-     * @return
+     * Calculate an Expression, calling several validation methods to avoid calculating an invalid expression
+     * @param expression the String that may contain or not a valid expression to be calculated
+     * @return a double if the expression is valid, or NaN if the expression is invalid
      */
     public double calculateExpression(String expression) {
-        Double expressionResult = Double.NaN;
+        Double expressionResult = Double.NaN; //Result if expression eventually doesn't succeed in validation(if isn't valid)
         String operator = "";
         String firstParcel;
         String secondParcel;
         String parcels = "";
 
-        if (hasEqualParentheses(expression)) {
+        if (hasEqualParentheses(expression)) { //Only proceed if expression has the same number of opened and closed parentheses(validation)
             if (hasOpenParentheses(expression)) {
                 if (hasEqualParentheses(expression)) {
                     operator = expression.substring(0, expression.indexOf(OPEN_PARENTHESES)).trim();
@@ -184,7 +200,7 @@ public class Calculator {
             }
 
             if (!hasOpenParentheses(expression)) {
-                if (validateExpression(expression, NO_PARENTHESES)) {
+                if (validateExpression(expression, NO_PARENTHESES)) { //Only proceed if expression passes validation of non parentheses expressions
                     if (isMemoryName(expression)) {
                         expressionResult = getExpressionValue(expression);
                     } else if (Utilities.isDoubleValue(expression)) {
@@ -195,13 +211,13 @@ public class Calculator {
                 int lastIndexParcel = getLastIndexExpression(parcels);
                 firstParcel = parcels.substring(1, lastIndexParcel - 1);
                 if (isBinaryOperator(operator)) {
-                    if (validateExpression(parcels, BINARY_OPERATION)) {
+                    if (validateExpression(parcels, BINARY_OPERATION)) { //Only proceed if expression passes binary operations validation
                         secondParcel = parcels.substring(lastIndexParcel, parcels.length() - 1).trim();
                         secondParcel = secondParcel.substring(1, secondParcel.length());
                         expressionResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
                     }
                 } else if (isUnaryOperator(operator)) {
-                    if (validateExpression(firstParcel, UNARY_OPERATION)) {
+                    if (validateExpression(firstParcel, UNARY_OPERATION)) { //Only proceed if expression passes unary operation validation
                         if (Utilities.isDoubleValue(firstParcel)) {
                             expressionResult = unaryExpression(getExpressionValue(firstParcel), operator);
                         } else {
@@ -209,15 +225,19 @@ public class Calculator {
                             expressionResult = unaryExpression(getExpressionValue(secondParcel), operator);
                         }
                     }
-                } else if (validateExpression(expression, LITERAL_OPERATION)) {
-                    expressionResult = literalExpression(expression);
+                } else if (validateExpression(expression, LITERAL_OPERATION)) { //Only proceed if expression passes literal operation validation
+                    expressionResult = calcLiteralExpression(expression);
                 }
             }
         }
-
         return expressionResult;
     }
 
+    /**
+     * Sets the last value calculated only if the last value
+     * calculated was valid(from a valid expression)
+     * @param expressionResult the double from the last expression result which may be a number, or a NaN(if expression was invalid)
+     */
     public void setLastValue(Double expressionResult) {
         if (!Double.isNaN(expressionResult)) {
             lastResult = expressionResult;
@@ -225,23 +245,25 @@ public class Calculator {
     }
 
     /**
-     * Calculate Literal Expression
-     *
-     * @param expression
-     * @return
+     * Calculate Literal Expression, it is either a memory or a double value since literal validation was a success
+     * @param expression the String which is a literal to be calculated
+     * @return the value of the String calculated
      */
-    public double literalExpression(String expression) {
+    public double calcLiteralExpression(String expression) {
         double value;
-        if (isMemoryName(expression)) {
-            value =  getExpressionValue(expression);
-        } else if (Utilities.isDoubleValue(expression)) {
+        if (Utilities.isDoubleValue(expression)) {
             value = Double.parseDouble(expression);
         } else {
-            value = Double.NaN;
+            value =  getExpressionValue(expression);
         }
         return value;
     }
 
+    /**
+     * Checks if an expression without parentheses if valid if it is either a memory name or a number
+     * @param expression the String which may be or not a memory name or a number
+     * @return true if String expression is a literal(memory name or a number)
+     */
     public boolean isValidNoParentheses(String expression) {
         boolean isValid = true;
         if (!isMemoryName(expression) && !Utilities.isDoubleValue(expression)) {
@@ -250,14 +272,24 @@ public class Calculator {
         return isValid;
     }
 
+    /**
+     * Checks if the binary operation parcels are valid and doesn't contain 1 single parentheses
+     * @param expression the String which has or not valid binary operation parcels
+     * @return true if String expression contains valid binary operation parcels
+     */
     public boolean isValidBinaryOperation(String expression) {
         boolean isValid = true;
-        if (openParCount(expression) == 1) { //parcels
+        if (parCount(expression) == 1) {
             isValid = false;
         }
         return isValid;
     }
 
+    /**
+     * Checks if a unary operation parcel is valid
+     * @param expression the String which may or not be a valid unary operation parcel
+     * @return true if the expression is a valid unary operation parcel
+     */
     public boolean isValidUnaryOperation(String expression) {
         boolean isValid = true;
         if (!Utilities.isDoubleValue(expression) &&
@@ -267,6 +299,11 @@ public class Calculator {
         return isValid;
     }
 
+    /**
+     * Checks if a literal is valid(if it is a memory name or a double)
+     * @param expression the String that may be or not a valid literal
+     * @return true if expression is a valid literal
+     */
     public boolean isValidLiteralOperation(String expression) {
         boolean isValid = true;
         if (!isMemoryName(expression) || !Utilities.isDoubleValue(expression)) {
@@ -276,6 +313,12 @@ public class Calculator {
     }
 
 
+    /**
+     * Checks if an expression if valid
+     * @param expression the String that may be a parcel, two parcels or a single literal
+     * @param type type of operation the expression belongs at
+     * @return true if the expression is valid
+     */
     public boolean validateExpression(String expression, String type) {
         boolean isValid = true;
 
@@ -299,10 +342,9 @@ public class Calculator {
 
     /**
      * Calculate Unary Expression
-     *
-     * @param parcel
-     * @param operator
-     * @return
+     * @param parcel the double inside the unary parcel we want to calculate
+     * @param operator the operator defining which unary operation to proceed
+     * @return the result of the unary operation between the parcel and the operator
      */
     public double unaryExpression(double parcel, String operator) {
         double result = Double.NaN;
@@ -340,11 +382,10 @@ public class Calculator {
 
     /**
      * Calculate binary expression
-     *
-     * @param firstParcel
-     * @param secondParcel
-     * @param operator
-     * @return
+     * @param firstParcel the double inside the first parcel of the binary operation
+     * @param secondParcel the double inside the second parcel of the binary operation
+     * @param operator the operator used to calculate the result between the first and second parcel
+     * @return the result of the binary operation
      */
     public double binaryExpression(double firstParcel, double secondParcel, String operator) {
         double result = Double.NaN;
@@ -365,97 +406,71 @@ public class Calculator {
         return result;
     }
 
+    /**
+     *Checks if there are any memories
+     * @return true if it has at least one memory object created
+     */
     public boolean hasMemories() {
         return mem1 != null || mem2 != null;
     }
 
     /**
-     * VM - Get memory value
+     * Get memory value
      *
-     * @param memoryName
+     * @param memoryName the
      * @return
      */
     public double getMemoryValue(String memoryName) {
         double value = Double.NaN;
         if (hasMemories()) {
-            if (mem1 != null && memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
+            if (memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
                 value = mem1.getMemoryValue();
-            } else if (mem2 != null && memoryName.equalsIgnoreCase(mem2.getMemoryName())) {
+            } else if (memoryName.equalsIgnoreCase(mem2.getMemoryName())) {
                 value = mem2.getMemoryValue();
             }
         }
         return value;
     }
 
-//    /**
-//     * AVM - Assign last value to memory
-//     *
-//     * @param memoryName
-//     */
-//    public void assignLastValue(String memoryName) {
-//        double lastResult = getLastResult();
-//        if (isMemoryName(memoryName)) {
-//            if (memoryName.equalsIgnoreCase(mem1.getMemoryName())) {
-//                    mem1.setValue(lastResult);
-//            } else if (memoryName.equalsIgnoreCase(mem2.getMemoryName())) {
-//                    mem2.setValue(lastResult);
-//            }
-//        } else {
-//            System.out.println(NON_EXISTENT_MEMORY);
-//        }
-//    }
-
     /**
-     * Get memory value - REMOVE
-     *
-     * @param memoryName
+     * @return true if mem1 object exists, or false otherwise
      */
-//    public void getValue(String memoryName) {
-//        double memoryValue = getMemoryValue(memoryName);
-//        if (!(Double.isNaN(memoryValue))) {
-//            System.out.printf("%s: ", memoryName);
-//            System.out.printf("%.2f\n", memoryValue);
-//        } else {
-//            System.out.println(NON_EXISTENT_MEMORY);
-//        }
-//    }
-
-    /**
-     * LM - Gets memories names and values;
-     */
-//    public void getMemoriesInfo() {
-//        if (hasMemories()) {
-//            if (mem1 != null) {
-//                System.out.printf("%s: ", mem1.getMemoryName());
-//                System.out.printf("%.2f\n", mem1.getMemoryValue());
-//            }
-//            if (mem2 != null) {
-//                System.out.printf("%s: ", mem2.getMemoryName());
-//                System.out.printf("%.2f\n", mem2.getMemoryValue());
-//            }
-//        }
-//    }
-
     public boolean hasMemory1() {
         return mem1 != null;
     }
 
+    /**
+     * @return true if mem2 object exists, or false otherwise
+     */
     public boolean hasMemory2() {
         return mem2 != null;
     }
 
+    /**
+     * @return the mem1 name if mem1 exists
+     */
     public String getMemory1Name() {
         return mem1.getMemoryName();
     }
 
+    /**
+     * @return the mem2 name if mem2 exists
+     */
     public String getMemory2Name() {
         return mem2.getMemoryName();
     }
 
+    /**
+     *
+     * @param value sets mem1 value
+     */
     public void setMemory1Value(double value) {
         mem1.setValue(value);
     }
 
+    /**
+     * @param value sets mem2 value
+     */
     public void setMemory2Value(double value) {
         mem2.setValue(value);
     }
@@ -463,9 +478,8 @@ public class Calculator {
 
     /**
      * Check if is a binary operator
-     *
-     * @param operator
-     * @return
+     * @param operator the String which determines the type of operation
+     * @return true if operator is a binary operator
      */
     public boolean isBinaryOperator(String operator) {
         return operator.equals(ADD) || operator.equals(MINUS) || operator.equals(DIVISION)
@@ -474,9 +488,8 @@ public class Calculator {
 
     /**
      * Check if is a unary operator
-     *
-     * @param operator
-     * @return
+     * @param operator the String which determines the type of operation
+     * @return true if operator is a unary operator
      */
     public boolean isUnaryOperator(String operator) {
         return operator.equals(SIN) || operator.equals(SEN) || operator.equals(COS) || operator.equals(EXP)
@@ -485,8 +498,7 @@ public class Calculator {
 
     /**
      * Get Last Value calculated
-     *
-     * @return
+     * @return the double of the last result calculated from a valid expression
      */
     public double getLastResult() {
         return lastResult;

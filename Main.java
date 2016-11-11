@@ -24,8 +24,12 @@ public class Main {
                 "S - Sair\n");
     }
 
+    /**
+     * Calculate an expression given by the user
+     * @param input the String expression given by the user
+     * @param c1 Calculator object
+     */
     private static void calcExp(String input, Calculator c1) {
-//        if (c1.hasEqualParentheses(input)) {
             double result = c1.calculateExpression(input);
             if (!Double.isNaN(result)) {
                 System.out.printf("resultado: %.2f\n", result);
@@ -35,7 +39,12 @@ public class Main {
             }
     }
 
-    private static void avm(String memoryName, Calculator c1) {
+    /**
+     * Assign last result from a valid expression if memory name provided is equal to mem1 name or mem2 name
+     * @param memoryName the String referencing the memory we want to assign the value
+     * @param c1 Calculator object
+     */
+    private static void assignMemoryValue(String memoryName, Calculator c1) {
         double lastResult = c1.getLastResult();
         if (c1.isMemoryName(memoryName)) {
             if (memoryName.equalsIgnoreCase(c1.getMemory1Name())) {
@@ -48,7 +57,12 @@ public class Main {
         }
     }
 
-    private static void vm(String memoryName, Calculator c1) {
+    /**
+     * Get the value of a certain memory
+     * @param memoryName the String indicating the memory which we want to consult the value
+     * @param c1 Calculator object
+     */
+    private static void getMemoryValue(String memoryName, Calculator c1) {
         if (c1.isMemoryName(memoryName)) {
             if (memoryName.equalsIgnoreCase(c1.getMemory1Name())) {
                 String memory1Name = c1.getMemory1Name();
@@ -67,7 +81,11 @@ public class Main {
     }
 
 
-    private static void lm(Calculator c1) {
+    /**
+     * Shows all existing memories and corresponding values
+     * @param c1 Calculator object
+     */
+    private static void getMemoriesInfo(Calculator c1) {
         if (c1.hasMemories()) {
             if(c1.hasMemory1()) {
                 String mem1Name = c1.getMemory1Name();
@@ -106,17 +124,17 @@ public class Main {
         while(!option.equals("S")) {
             switch (option) {
                 case ("VM"): //Return value of a certain memory
-                    vm(in.next(), c1);
+                    getMemoryValue(in.next(), c1);
                     break;
                 case ("LM"): //Return value and name of all memories
-                    lm(c1);
+                    getMemoriesInfo(c1);
                     break;
                 case("CE"): //Calculate Expression
                     String input = in.nextLine().toUpperCase().trim();
                     calcExp(input, c1);
                     break;
                 case("AVM"): //Set last result calculated to a certain memory
-                    avm(in.next(), c1);
+                    assignMemoryValue(in.next(), c1);
                     break;
                 case ("A"): //Help Menu
                     showOptions();
