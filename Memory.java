@@ -7,9 +7,9 @@ public class Memory {
     private double memoryValue;
     private String memoryName;
 
-    public Memory(String name) {
+    public Memory(String memoryName) {
         memoryValue = 0;
-        memoryName = name;
+        this.memoryName = memoryName;
     }
 
     /**
