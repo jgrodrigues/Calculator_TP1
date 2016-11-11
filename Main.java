@@ -9,6 +9,8 @@ public class Main {
     private static final String NON_EXISTENT_OPTION = "Opcao inexistente.";
     private static final String EXIT_MESSAGE = "Aplicacao terminada. Ate a proxima.";
     private static final String INVALID_EXPRESSION = "Expressao mal definida.";
+    public static final String NO_MEMORY_MESSAGE = "Calculadora sem memorias.";
+    public static final String NON_EXISTENT_MEMORY = "Memoria nao existente.";
 
     /**
      * SHOW HELP MENU
@@ -23,18 +25,66 @@ public class Main {
     }
 
     private static void calcExp(String input, Calculator c1) {
-        if (c1.hasEqualParentheses(input)) {
+//        if (c1.hasEqualParentheses(input)) {
             double result = c1.calculateExpression(input);
-            if (c1.hasEqualParentheses(input) & !Double.isNaN(result)) {
+            if (!Double.isNaN(result)) {
                 System.out.printf("resultado: %.2f\n", result);
+                c1.setLastValue(result);
             } else {
                 System.out.println(INVALID_EXPRESSION);
             }
+    }
+
+    private static void avm(String memoryName, Calculator c1) {
+        double lastResult = c1.getLastResult();
+        if (c1.isMemoryName(memoryName)) {
+            if (memoryName.equalsIgnoreCase(c1.getMemory1Name())) {
+                c1.setMemory1Value(lastResult);
+            } else if (memoryName.equalsIgnoreCase(c1.getMemory2Name())) {
+                c1.setMemory2Value(lastResult);
+            }
         } else {
-            System.out.println(INVALID_EXPRESSION);
+            System.out.println(NON_EXISTENT_MEMORY);
         }
     }
 
+    private static void vm(String memoryName, Calculator c1) {
+        if (c1.isMemoryName(memoryName)) {
+            if (memoryName.equalsIgnoreCase(c1.getMemory1Name())) {
+                String memory1Name = c1.getMemory1Name();
+                double memory1Value = c1.getMemoryValue(memoryName);
+                System.out.printf("%s: ", memory1Name);
+                System.out.printf("%.2f\n", memory1Value);
+            } else if (memoryName.equalsIgnoreCase(c1.getMemory2Name())) {
+                String memory2Name = c1.getMemory2Name();
+                double memory2Value = c1.getMemoryValue(memoryName);
+                System.out.printf("%s: ", memory2Name);
+                System.out.printf("%.2f\n", memory2Value);
+            }
+        } else {
+            System.out.println(NON_EXISTENT_MEMORY);
+        }
+    }
+
+
+    private static void lm(Calculator c1) {
+        if (c1.hasMemories()) {
+            if(c1.hasMemory1()) {
+                String mem1Name = c1.getMemory1Name();
+                double mem1Value = c1.getMemoryValue(mem1Name);
+                System.out.printf("%s: ", mem1Name);
+                System.out.printf("%.2f\n", mem1Value);
+            }
+            if (c1.hasMemory2()) {
+                String mem2Name = c1.getMemory2Name();
+                double mem2Value = c1.getMemoryValue(mem2Name);
+                System.out.printf("%s: ", mem2Name);
+                System.out.printf("%.2f\n", mem2Value);
+            }
+        } else {
+            System.out.println(NO_MEMORY_MESSAGE);
+        }
+    }
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -55,18 +105,18 @@ public class Main {
         String option = in.next().toUpperCase();
         while(!option.equals("S")) {
             switch (option) {
-                case ("VM"): //Return value of memory
-                    c1.getValue(in.next());
+                case ("VM"): //Return value of a certain memory
+                    vm(in.next(), c1);
                     break;
-                case ("LM"): //Return value and name of memories
-                    c1.getMemoriesInfo();
+                case ("LM"): //Return value and name of all memories
+                    lm(c1);
                     break;
                 case("CE"): //Calculate Expression
                     String input = in.nextLine().toUpperCase().trim();
                     calcExp(input, c1);
                     break;
-                case("AVM"): //Set last result value to a memory
-                    c1.assignLastValue(in.next());
+                case("AVM"): //Set last result calculated to a certain memory
+                    avm(in.next(), c1);
                     break;
                 case ("A"): //Help Menu
                     showOptions();
