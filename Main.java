@@ -13,9 +13,7 @@ public class Main {
     public static final String NO_MEMORY_MESSAGE = "Calculadora sem memorias.";
     public static final String NON_EXISTENT_MEMORY = "Memoria nao existente.";
 
-    /**
-     * Show help menu
-     */
+    /* Show help menu */
     private static void showOptions() {
         System.out.printf("VM - Consultar o valor da memoria\n" +
                 "LM - Indicar o nome das memorias\n" +
@@ -33,7 +31,7 @@ public class Main {
      */
     private static void calcExp(String input, Calculator c1) {
         if (c1.hasEqualParentheses(input)) { //Only proceed if expression has the same number of opened and closed parentheses(validation)
-            double result = c1.calculateExpression(input);
+            double result = c1.calcComplexExpression(input);
             if (!Double.isNaN(result)) {
                 System.out.printf("resultado: %.2f\n", result);
                 c1.setLastValue(result);
@@ -155,6 +153,7 @@ public class Main {
             }
             option = in.next().toUpperCase();
         }
+        in.close();
         System.out.println(EXIT_MESSAGE);
     }
 }

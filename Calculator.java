@@ -70,6 +70,7 @@ public class Calculator {
         }
     }
 
+    /* Other methods */
 
     /**
      * Check if input has equal number of open and closed parentheses
@@ -137,6 +138,12 @@ public class Calculator {
         return parentheses;
     }
 
+    /**
+     * Checks if expression corresponds to a memory name
+     *
+     * @param expression String to compare if it equals to any memory name
+     * @return true if expression equals any memory name
+     */
     public boolean isMemoryName(String expression) {
         boolean isMemory = false;
         if (mem1 != null || mem2 != null) {
@@ -155,41 +162,25 @@ public class Calculator {
     }
 
     /**
-     * Calculate expression value
+     * Calculate simple expression value
      *
-     * @param expression
-     * @return
+     * @param expression String containing the expression to be calculated
+     * @return the result of the simple expression
      */
-    public double getExpressionValue(String expression) {
+    public double calcSimpleExpression(String expression) {
         String operator = "";
         double number;
         if (hasOpenParentheses(expression)) {
             operator = expression.substring(0, expression.indexOf(OPEN_PARENTHESES)).trim();
         }
         if (isBinaryOperator(operator) || isUnaryOperator(operator)) {
-            number = calculateExpression(expression);
+            number = calcComplexExpression(expression);
         } else if (Utilities.isDoubleValue(expression)) {
             number = Double.parseDouble(expression);
         } else {
             number = getMemoryValue(expression);
         }
         return number;
-    }
-
-    /**
-     * Calculate Literal Expression, it is either a memory or a double value since literal validation was a success
-     *
-     * @param expression the String which is a literal to be calculated
-     * @return the value of the String calculated
-     */
-    public double calcLiteralExpression(String expression) {
-        double value;
-        if (Utilities.isDoubleValue(expression)) {
-            value = Double.parseDouble(expression);
-        } else {
-            value = getExpressionValue(expression);
-        }
-        return value;
     }
 
     /**
@@ -370,52 +361,74 @@ public class Calculator {
     }
 
     /**
-     * Calculate an Expression, calling several validation methods to avoid calculating an invalid expression
+     * Calculate complex expression, calling several validation methods to avoid calculating an invalid expression
      *
      * @param expression the String that may contain or not a valid expression to be calculated
-     * @return a double if the expression is valid, or NaN if the expression is invalid
+     * @return a double if the expression is valid, or NaN if the expression is invalid in some cases
      */
-    public double calculateExpression(String expression) {
+    public double calcComplexExpression(String expression) {
         Double expressionResult = Double.NaN; //Result if expression eventually doesn't succeed in validation(if isn't valid)
-        String operator;
-        String firstParcel;
-        String secondParcel;
-        String parcels;
-
         if (!hasOpenParentheses(expression)) {
             if (validateExpression(expression, NO_PARENTHESES)) { //Only proceed if expression passes validation of non parentheses expressions
-                if (isMemoryName(expression)) {
-                    expressionResult = getExpressionValue(expression);
-                } else if (Utilities.isDoubleValue(expression)) {
-                    expressionResult = Double.parseDouble(expression);
-                }
+                expressionResult = calcSimpleExpression(expression);
             }
         } else {
-            operator = expression.substring(0, expression.indexOf(OPEN_PARENTHESES)).trim();
-            parcels = expression.substring(expression.indexOf(OPEN_PARENTHESES), expression.length()).trim();
+            String operator = expression.substring(0, expression.indexOf(OPEN_PARENTHESES)).trim();
+            String parcels = expression.substring(expression.indexOf(OPEN_PARENTHESES), expression.length()).trim();
             int lastIndexParcel = getLastIndexExpression(parcels);
-            firstParcel = parcels.substring(1, lastIndexParcel - 1);
+            String firstParcel = parcels.substring(1, lastIndexParcel - 1);
             if (isBinaryOperator(operator)) {
                 if (validateExpression(parcels, BINARY_OPERATION)) { //Only proceed if expression passes binary operations validation
-                    secondParcel = parcels.substring(lastIndexParcel, parcels.length() - 1).trim();
-                    secondParcel = secondParcel.substring(1, secondParcel.length());
-                    expressionResult = binaryExpression(getExpressionValue(firstParcel), getExpressionValue(secondParcel), operator);
+                    expressionResult = binaryOp(firstParcel, operator, parcels, lastIndexParcel);
                 }
             } else if (isUnaryOperator(operator)) {
                 if (validateExpression(firstParcel, UNARY_OPERATION)) { //Only proceed if expression passes unary operation validation
-                    if (Utilities.isDoubleValue(firstParcel)) {
-                        expressionResult = unaryExpression(getExpressionValue(firstParcel), operator);
-                    } else {
-                        secondParcel = Double.toString(getExpressionValue(firstParcel));
-                        expressionResult = unaryExpression(getExpressionValue(secondParcel), operator);
-                    }
+                    expressionResult = unaryOp(firstParcel, operator);
                 }
             } else if (validateExpression(expression, LITERAL_OPERATION)) { //Only proceed if expression passes literal operation validation
-                expressionResult = calcLiteralExpression(expression);
+                expressionResult = calcSimpleExpression(expression);
             }
         }
         return expressionResult;
     }
+
+    /**
+     * Calculate a unary operation
+     *
+     * @param firstParcel String containing the first parcel of the operation
+     * @param operator    String containing the unary operator
+     * @return the result of the unary expression
+     * @pre must be a valid unary expression
+     */
+    public double unaryOp(String firstParcel, String operator) {
+        String secondParcel;
+        double result;
+        if (Utilities.isDoubleValue(firstParcel)) {
+            result = unaryExpression(calcSimpleExpression(firstParcel), operator);
+        } else {
+            secondParcel = Double.toString(calcSimpleExpression(firstParcel));
+            result = unaryExpression(calcSimpleExpression(secondParcel), operator);
+        }
+        return result;
+    }
+
+    /**
+     * Calculate a binary operation
+     *
+     * @param firstParcel     String containing the first parcel of the operation
+     * @param operator        String containing the binary operator
+     * @param parcels         String containing both first and second parcel
+     * @param lastIndexParcel the integer indicating the last index of a parcel
+     * @return the result of the binary operation
+     * @pre is a valid binary expression
+     */
+    public double binaryOp(String firstParcel, String operator, String parcels, int lastIndexParcel) {
+        String secondParcel;
+        secondParcel = parcels.substring(lastIndexParcel, parcels.length() - 1).trim();
+        secondParcel = secondParcel.substring(1, secondParcel.length());
+        return binaryExpression(calcSimpleExpression(firstParcel), calcSimpleExpression(secondParcel), operator);
+    }
+
 
     /**
      * Sets the last value calculated only if the last value
@@ -428,6 +441,7 @@ public class Calculator {
             lastResult = expressionResult;
         }
     }
+
 
     /**
      * Checks if there are any memories
